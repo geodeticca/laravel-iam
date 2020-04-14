@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Model\User;
+
+use Geodeticca\Iam\User\User as IamUser;
+
+class User extends IamUser
+{
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public function hydrate(array $data)
+    {
+        parent::hydrate($data);
+
+        //
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = array_merge(parent::toArray(), [
+            //
+        ]);
+
+        return $data;
+    }
+}
