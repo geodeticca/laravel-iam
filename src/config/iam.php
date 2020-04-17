@@ -9,7 +9,7 @@ return [
     'jwt' => [
         'iss' => env('JWT_ISS'),
         'alg' => env('JWT_ALG'),
-        'secret' => env('JWT_SECRET'),
-        'pubkey' => env('JWT_PUBKEY'),
+        'secret' => storage_path(env('JWT_SECRET')),
+        'pubkey' => storage_path(env('JWT_PUBKEY')),
     ],
 ];

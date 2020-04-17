@@ -9,8 +9,10 @@ use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
 use Dense\Jwt\Auth\Sign;
 
+use Geodeticca\Iam\Jwt\JwtProvider;
+use Geodeticca\Iam\Jwt\JwtGuard;
 use Geodeticca\Iam\Service\Client as IamClient;
-
+use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
 
 class IamServiceProvider extends ServiceProvider
@@ -58,6 +60,30 @@ class IamServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/resources/views' => resource_path('views/vendor/iam'),
         ]);
+
+        $this->app['auth']->extend('geodeticca-jwt', function () {
+            $sign = $this->app->make(Sign::class);
+            $iam = $this->app->make(IamClient::class);
+
+            $jwtProvider = new JwtProvider($sign, $iam);
+
+            return new JwtGuard($jwtProvider);
+        });
+
+        $this->app['auth']->viaRequest('geodeticca-api', function () {
+            $sign = $this->app->make(Sign::class);
+
+            try {
+                $claims = $sign->decode();
+
+                if ($claims) {
+                    $account = Account::createFromJwt((array)$claims->usr);
+
+                    return $account;
+                }
+            } catch (\Exception $e) {
+            }
+        });
     }
 
     /**
@@ -71,17 +97,17 @@ class IamServiceProvider extends ServiceProvider
             $adapter = new JWT();
 
             return new Sign($adapter, [
-                'iss' => Config::get('jwt.iss'),
-                'alg' => Config::get('jwt.alg'),
-                'pubkey' => Config::get('jwt.pubkey'),
+                'iss' => Config::get('iam.jwt.iss'),
+                'alg' => Config::get('iam.jwt.alg'),
+                'pubkey' => Config::get('iam.jwt.pubkey'),
             ]);
         });
 
         $this->app->bind(IamClient::class, function () {
             $baseUrl = implode('/', [
-                Config::get('iam.url'),
-                Config::get('iam.version'),
-            ]);
+                Config::get('iam.service.url'),
+                Config::get('iam.service.version'),
+            ]) . '/';
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,

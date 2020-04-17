@@ -12,7 +12,6 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Auth\GuardHelpers;
 
-use Dense\Jwt\Auth\Sign;
 use Dense\Jwt\Auth\Resolver;
 
 class JwtGuard implements Guard
@@ -20,31 +19,20 @@ class JwtGuard implements Guard
     use GuardHelpers;
 
     /**
-     * @var \Dense\Jwt\Auth\Sign
-     */
-    protected $sign;
-
-    /**
      * @var string
      */
     protected $cookieKey = 'jwt_token';
 
     /**
-     * Create a new authentication guard.
-     *
      * @param \Illuminate\Contracts\Auth\UserProvider $provider
-     * @param \Dense\Jwt\Auth\Sign $sign
      * @return void
      */
-    public function __construct(UserProvider $provider, Sign $sign)
+    public function __construct(UserProvider $provider)
     {
         $this->provider = $provider;
-        $this->sign = $sign;
     }
 
     /**
-     * Get the currently authenticated user.
-     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function user()
@@ -73,13 +61,36 @@ class JwtGuard implements Guard
     }
 
     /**
-     * Validate a user's credentials.
-     *
-     * @param  array $credentials
+     * @param array $credentials
      * @return bool
      */
     public function validate(array $credentials = [])
     {
+        return $this->provider->validateCredentials($this->user(), $credentials);
+    }
 
+    /**
+     * @param array $credentials
+     * @return bool
+     */
+    public function attempt(array $credentials = [])
+    {
+        $user = $this->provider->retrieveByCredentials($credentials);
+
+        // credentials validatiion is happening on the side of the IAM service
+        // all that is needed is to chcek if user was properly received
+        if (!is_null($user)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return void
+     */
+    public function logout()
+    {
+        Resolver::removeAuthCookie();
     }
 }

@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers\Iam;
 
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
-use App\Http\Controllers\Controller as BaseController;
+use Geodeticca\Iam\Service\Client as IamClient;
 
-use App\Model\User\UserBase;
-
-class AccountController extends BaseController
+class AccountController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,27 +20,28 @@ class AccountController extends BaseController
 
     public function account(
         Request $request,
-        UserBase $userBase
+        IamClient $iam
     ) {
-        $user = Auth::user();
+        $auth = Auth::user();
 
         if ($request->isMethod('post')) {
             $validation = [
                 'forename' => ['required', 'string', 'max:255'],
                 'surname' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255'],
+                'email' => ['required_without:login', 'max:255', 'nullable', 'email'],
+                'login' => ['required_without:email', 'max:255', 'nullable', 'string'],
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             ];
 
             $this->validate($request, $validation);
 
-            $user->hydrate($request->except(['user_id', 'password', 'role', 'type']));
+            $auth->hydrate($request->only(['forename', 'surname', 'email', 'login']));
             if ($request->filled('password')) {
-                $user->setAuthPassword($request->input('password'));
+                $auth->setAuthPassword($request->input('password'));
             }
 
             try {
-                $userBase->save($user);
+                $iam->account($auth);
 
                 return Redirect::route('account')
                     ->withSuccess(__('Save successfull.'));
@@ -59,7 +55,7 @@ class AccountController extends BaseController
         }
 
         return View::make('iam::account.account', [
-            'user' => $user,
+            'account' => $auth,
         ]);
     }
 }

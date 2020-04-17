@@ -30,12 +30,12 @@ class Generate extends Command
         $stubsDir = __DIR__ . DIRECTORY_SEPARATOR . 'stubs';
 
         // controllers
-        $controllerDir = app_path('Http/Controllers/Iam');
-        if (!is_dir($controllerDir)) {
-            mkdir($controllerDir, 0755, true);
+        $controllersIamDir = app_path('Http/Controllers/Iam');
+        if (!is_dir($controllersIamDir)) {
+            mkdir($controllersIamDir, 0755, true);
         }
 
-        $accountController = $controllerDir . '/AccountController.php';
+        $accountController = $controllersIamDir . '/AccountController.php';
         if (!file_exists($accountController)) {
             file_put_contents(
                 $accountController,
@@ -43,47 +43,30 @@ class Generate extends Command
             );
         }
 
+        $controllersAuthDir = app_path('Http/Controllers/Auth');
+        if (!is_dir($controllersAuthDir)) {
+            mkdir($controllersAuthDir, 0755, true);
+        }
+
+        $accountController = $controllersAuthDir . '/LoginController.php';
+        if (!file_exists($accountController)) {
+            file_put_contents(
+                $accountController,
+                file_get_contents($stubsDir . '/controller/LoginController.stub')
+            );
+        }
+
         // models
-        $modelDir = app_path('Model/User');
+        $modelDir = app_path('Model/Account');
         if (!is_dir($modelDir)) {
             mkdir($modelDir, 0755, true);
         }
 
-        $user = $modelDir . '/User.php';
+        $user = $modelDir . '/Account.php';
         if (!file_exists($user)) {
             file_put_contents(
                 $user,
-                file_get_contents($stubsDir . '/model/User/User.stub')
-            );
-        }
-
-        $userBase = $modelDir . '/UserBase.php';
-        if (!file_exists($userBase)) {
-            file_put_contents(
-                $userBase,
-                file_get_contents($stubsDir . '/model/User/UserBase.stub')
-            );
-        }
-
-        $userRole = $modelDir . '/UserRole.php';
-        if (!file_exists($userRole)) {
-            file_put_contents(
-                $userRole,
-                file_get_contents($stubsDir . '/model/User/UserRole.stub')
-            );
-        }
-
-        // policies
-        $policiesDir = app_path('Policies');
-        if (!is_dir($policiesDir)) {
-            mkdir($policiesDir, 0755, true);
-        }
-
-        $userPolicy = $policiesDir . '/UserPolicy.php';
-        if (!file_exists($userPolicy)) {
-            file_put_contents(
-                $userPolicy,
-                file_get_contents($stubsDir . '/policies/UserPolicy.stub')
+                file_get_contents($stubsDir . '/model/Account/Account.stub')
             );
         }
     }

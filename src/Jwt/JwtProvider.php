@@ -50,9 +50,9 @@ class JwtProvider implements UserProvider
         try {
             $claims = $this->sign->decode($identifier);
 
-            $user = $claims->user;
+            $account = Account::createFromJwt((array)$claims->usr);
 
-            return $user;
+            return $account;
         } catch (\Exception $e) {
         }
     }
@@ -97,11 +97,14 @@ class JwtProvider implements UserProvider
             $token = $payload->token;
 
             $claims = $this->sign->decode($token);
-            Resolver::publishAuthCookie($token);
 
-            $account = Account::createFromJwt((array)$claims->usr);
+            if (!empty($claims)) {
+                Resolver::publishAuthCookie($token);
 
-            return $account;
+                $account = Account::createFromJwt((array)$claims->usr);
+
+                return $account;
+            }
         } catch (\Exception $e) {
         }
     }
@@ -111,7 +114,7 @@ class JwtProvider implements UserProvider
      * @param array $credentials
      * @return bool
      */
-    public function validateCredentials(Authenticatable $user, array $credentials)
+    public function validateCredentials(Authenticatable $user, array $credentials = [])
     {
         return !is_null($user);
     }

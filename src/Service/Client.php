@@ -115,6 +115,32 @@ class Client
     /**
      * @return mixed
      */
+    public function account($account)
+    {
+        $endpoint = 'account';
+
+        $response = $this->client->post($endpoint, $this->getDefaultParams([
+            'form_params' => $account->toArray(),
+        ]));
+
+        return $this->getResult($response);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function reset()
+    {
+        $endpoint = 'account/reset';
+
+        $response = $this->client->post($endpoint, $this->getDefaultParams());
+
+        return $this->getResult($response);
+    }
+
+    /**
+     * @return mixed
+     */
     public function apps()
     {
         $endpoint = 'app';
