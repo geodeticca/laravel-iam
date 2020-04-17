@@ -10,5 +10,5 @@ namespace Geodeticca\Iam\Account;
 
 trait Authenticatable
 {
-    use AuthIdentifierManage, RememberTokenManage;
+    use AuthIdentifierManage, PasswordManage, RememberTokenManage;
 }
