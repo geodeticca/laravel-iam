@@ -134,6 +134,14 @@ class Account implements \JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    public function belongsToOrganization()
+    {
+        return !is_null($this->organization_id);
+    }
+
+    /**
      * @param string $scope
      * @param int $permission
      * @return $this
