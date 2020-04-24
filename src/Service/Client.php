@@ -10,6 +10,8 @@ namespace Geodeticca\Iam\Service;
 use GuzzleHttp\Client as GuzzleClient;
 use Dense\Jwt\Auth\Resolver as JwtResolver;
 
+use Geodeticca\Iam\Account\Account;
+
 /**
  * Zabezpecenie prihlasenia pomocou internej webovej sluzby IAM
  *
@@ -113,14 +115,18 @@ class Client
     }
 
     /**
+     * @param \Geodeticca\Iam\Account\Account $account
+     * @param string|null $password
      * @return mixed
      */
-    public function account($account)
+    public function account(Account $account, $password = null)
     {
         $endpoint = 'account';
 
         $response = $this->client->post($endpoint, $this->getDefaultParams([
-            'form_params' => $account->toArray(),
+            'form_params' => array_merge($account->toArray(), [
+                'password' => $password,
+            ]),
         ]));
 
         return $this->getResult($response);

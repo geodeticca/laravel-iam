@@ -1,5 +1,4 @@
 <?php
-
 /**
  * User: Maros Jasan
  * Date: 21.11.2019

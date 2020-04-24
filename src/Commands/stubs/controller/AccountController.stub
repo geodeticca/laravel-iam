@@ -36,12 +36,11 @@ class AccountController extends Controller
             $this->validate($request, $validation);
 
             $auth->hydrate($request->only(['forename', 'surname', 'email', 'login']));
-            if ($request->filled('password')) {
-                $auth->setAuthPassword($request->input('password'));
-            }
+
+            $password = $request->input('password');
 
             try {
-                $iam->account($auth);
+                $iam->account($auth, $password);
 
                 return Redirect::route('account')
                     ->withSuccess(__('Save successfull.'));
