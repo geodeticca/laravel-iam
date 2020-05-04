@@ -3,7 +3,6 @@
 return [
     'service' => [
         'url' => env('IAM_URL'),
-        'version' => env('IAM_VERSION'),
     ],
 
     'jwt' => [

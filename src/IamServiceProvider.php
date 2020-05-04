@@ -104,10 +104,7 @@ class IamServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(IamClient::class, function () {
-            $baseUrl = implode('/', [
-                Config::get('iam.service.url'),
-                Config::get('iam.service.version'),
-            ]) . '/';
+            $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,
