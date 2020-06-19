@@ -19,11 +19,6 @@ class JwtGuard implements Guard
     use GuardHelpers;
 
     /**
-     * @var string
-     */
-    protected $cookieKey = 'jwt_token';
-
-    /**
      * @param \Illuminate\Contracts\Auth\UserProvider $provider
      * @return void
      */
@@ -78,7 +73,7 @@ class JwtGuard implements Guard
         $user = $this->provider->retrieveByCredentials($credentials);
 
         // credentials validatiion is happening on the side of the IAM service
-        // all that is needed is to chcek if user was properly received
+        // all that is needed is to check if user was properly received
         if (!is_null($user)) {
             return true;
         }
