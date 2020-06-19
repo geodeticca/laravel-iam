@@ -37,18 +37,28 @@ class Client
     }
 
     /**
-     * @param array $headers
      * @return array
      */
-    protected function getDefaultParams(array $headers = [])
+    protected function getDefaultParams()
     {
         $token = JwtResolver::resolveTokenFromCookie();
 
-        return array_merge([
+        return [
             'headers' => [
                 'Authorization' => JwtResolver::createAuthHeader($token),
             ],
-        ], $headers);
+        ];
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    protected function params(array $params = [])
+    {
+        $defaultParams = $this->getDefaultParams();
+
+        return array_merge($defaultParams, $params);
     }
 
     /**
@@ -97,7 +107,7 @@ class Client
     {
         $endpoint = 'auth/authenticated';
 
-        $response = $this->client->post($endpoint, $this->getDefaultParams());
+        $response = $this->post($endpoint);
 
         return $this->getResult($response);
     }
@@ -109,7 +119,19 @@ class Client
     {
         $endpoint = 'auth/extend';
 
-        $response = $this->client->post($endpoint, $this->getDefaultParams());
+        $response = $this->post($endpoint);
+
+        return $this->getResult($response);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function accountDetail()
+    {
+        $endpoint = 'account/detail';
+
+        $response = $this->get($endpoint);
 
         return $this->getResult($response);
     }
@@ -119,14 +141,12 @@ class Client
      * @param string|null $password
      * @return mixed
      */
-    public function account(Account $account, $password = null)
+    public function accountUpdate(Account $account, $password = null)
     {
-        $endpoint = 'account';
+        $endpoint = 'account/update';
 
-        $response = $this->client->post($endpoint, $this->getDefaultParams([
-            'form_params' => array_merge($account->toArray(), [
-                'password' => $password,
-            ]),
+        $response = $this->post($endpoint, array_merge($account->toArray(), [
+            'password' => $password,
         ]));
 
         return $this->getResult($response);
@@ -135,47 +155,61 @@ class Client
     /**
      * @return mixed
      */
-    public function reset()
+    public function accountReset()
     {
         $endpoint = 'account/reset';
 
-        $response = $this->client->post($endpoint, $this->getDefaultParams());
+        $response = $this->post($endpoint);
 
         return $this->getResult($response);
     }
 
     /**
+     * @param string $endpoint
+     * @param array $params
      * @return mixed
      */
-    public function apps()
+    protected function get($endpoint, array $params = [])
     {
-        $endpoint = 'app';
-
-        $response = $this->client->get($endpoint, $this->getDefaultParams());
+        $response = $this->client->get($endpoint, $this->params([
+            'query' => $params,
+        ]));
 
         return $this->getResult($response);
     }
 
     /**
+     * @param string $endpoint
+     * @param array $params
      * @return mixed
      */
-    public function users()
+    protected function post($endpoint, array $params = [])
     {
-        $endpoint = 'user';
-
-        $response = $this->client->get($endpoint, $this->getDefaultParams());
+        $response = $this->client->post($endpoint, $this->params([
+            'form_params' => $params,
+        ]));
 
         return $this->getResult($response);
     }
 
     /**
+     * @param string $endpoint
      * @return mixed
      */
-    public function organizations()
+    protected function put($endpoint)
     {
-        $endpoint = 'organization';
+        $response = $this->client->put($endpoint, $this->params());
 
-        $response = $this->client->get($endpoint, $this->getDefaultParams());
+        return $this->getResult($response);
+    }
+
+    /**
+     * @param string $endpoint
+     * @return mixed
+     */
+    protected function delete($endpoint)
+    {
+        $response = $this->client->delete($endpoint, $this->params());
 
         return $this->getResult($response);
     }
