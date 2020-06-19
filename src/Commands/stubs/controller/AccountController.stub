@@ -40,7 +40,7 @@ class AccountController extends Controller
             $password = $request->input('password');
 
             try {
-                $iam->account($auth, $password);
+                $iam->accountUpdate($auth, $password);
 
                 return Redirect::route('account')
                     ->withSuccess(__('Save successfull.'));
