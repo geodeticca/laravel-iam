@@ -169,7 +169,7 @@ class Client
      * @param array $params
      * @return mixed
      */
-    protected function get($endpoint, array $params = [])
+    public function get($endpoint, array $params = [])
     {
         $response = $this->client->get($endpoint, $this->params([
             'query' => $params,
@@ -183,7 +183,7 @@ class Client
      * @param array $params
      * @return mixed
      */
-    protected function post($endpoint, array $params = [])
+    public function post($endpoint, array $params = [])
     {
         $response = $this->client->post($endpoint, $this->params([
             'form_params' => $params,
@@ -196,7 +196,7 @@ class Client
      * @param string $endpoint
      * @return mixed
      */
-    protected function put($endpoint)
+    public function put($endpoint)
     {
         $response = $this->client->put($endpoint, $this->params());
 
@@ -207,7 +207,7 @@ class Client
      * @param string $endpoint
      * @return mixed
      */
-    protected function delete($endpoint)
+    public function delete($endpoint)
     {
         $response = $this->client->delete($endpoint, $this->params());
 
