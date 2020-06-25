@@ -26,6 +26,11 @@ class Client
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * Client constructor.
      *
      * @param \GuzzleHttp\Client $client
@@ -41,13 +46,44 @@ class Client
      */
     protected function getDefaultParams()
     {
-        $token = JwtResolver::resolveTokenFromCookie();
+        if (empty($this->params)) {
+            $token = JwtResolver::resolveTokenFromCookie();
 
-        return [
+            $this->params = [
+                'headers' => [
+                    'Authorization' => JwtResolver::createAuthHeader($token),
+                ],
+            ];
+        }
+
+        return $this->params;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     */
+    protected function setDefaultParams(array $params)
+    {
+        $this->params = array_merge($this->getDefaultParams(), $params);
+
+        return $this;
+    }
+
+    /**
+     * @param string $header
+     * @param string $value
+     * @return $this
+     */
+    public function setDefaultHeader($header, $value)
+    {
+        $this->setDefaultParams([
             'headers' => [
-                'Authorization' => JwtResolver::createAuthHeader($token),
+                $header => $value,
             ],
-        ];
+        ]);
+
+        return $this;
     }
 
     /**
