@@ -7,6 +7,8 @@
 
 namespace Geodeticca\Iam\Account;
 
+use Geodeticca\User\Authority as UserAuthority;
+
 class Account implements \JsonSerializable
 {
     use AuthIdentifierManage, RememberTokenManage;
@@ -193,6 +195,22 @@ class Account implements \JsonSerializable
     public function isNotAdmin()
     {
         return !$this->isAdmin();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSystemUser()
+    {
+        return $this->authority === AccountAuthority::AUTHORITY_SYSTEM;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotSystemUser()
+    {
+        return !$this->isSystemUser();
     }
 
     /**
