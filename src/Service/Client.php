@@ -31,6 +31,11 @@ class Client
     protected $params = [];
 
     /**
+     * @var  string
+     */
+    private $token;
+
+    /**
      * Client constructor.
      *
      * @param \GuzzleHttp\Client $client
@@ -42,12 +47,25 @@ class Client
     }
 
     /**
+     * @return string
+     * @throws \Exception
+     */
+    protected function token()
+    {
+        if (!$this->token) {
+            $this->token = JwtResolver::resolveTokenFromCookie();
+        }
+
+        return $this->token;
+    }
+
+    /**
      * @return array
      */
     protected function getDefaultParams()
     {
         if (empty($this->params)) {
-            $token = JwtResolver::resolveTokenFromCookie();
+            $token = $this->token();
 
             $this->params = [
                 'headers' => [
