@@ -11,7 +11,8 @@ use Dense\Jwt\Auth\Sign;
 
 use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;
-use Geodeticca\Iam\Service\Client as IamClient;
+use Geodeticca\Iam\Service\StatelessClient as IamStatelessClient;
+use Geodeticca\Iam\Service\StatefulClient as IamStatefulClient;
 use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
 
@@ -63,7 +64,7 @@ class IamServiceProvider extends ServiceProvider
 
         $this->app['auth']->extend('geodeticca-jwt', function () {
             $sign = $this->app->make(Sign::class);
-            $iam = $this->app->make(IamClient::class);
+            $iam = $this->app->make(IamStatefulClient::class);
 
             $jwtProvider = new JwtProvider($sign, $iam);
 
@@ -103,7 +104,7 @@ class IamServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->bind(IamClient::class, function () {
+        $this->app->bind(IamStatelessClient::class, function () {
             $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
@@ -120,7 +121,33 @@ class IamServiceProvider extends ServiceProvider
 
             $connection = new GuzzleClient($defaultOptions);
 
-            return new IamClient($connection);
+            $credentials = [
+                'login' => Config::get('iam.service.login'),
+                'password' => Config::get('iam.service.password'),
+                'app' => Config::get('iam.app'),
+            ];
+
+            return new IamStatelessClient($connection, $credentials);
+        });
+
+        $this->app->bind(IamStatefulClient::class, function () {
+            $baseUrl = Config::get('iam.service.url') . '/';
+
+            $defaultOptions = [
+                'base_uri' => $baseUrl,
+                'verify' => true,
+            ];
+
+            // vypnute overovanie SSL certifikatov, okrem produkcneho prostredia
+            if (!$this->app->environment('prod')) {
+                $defaultOptions = array_merge($defaultOptions, [
+                    'verify' => false,
+                ]);
+            }
+
+            $connection = new GuzzleClient($defaultOptions);
+
+            return new IamStatefulClient($connection);
         });
     }
 }
