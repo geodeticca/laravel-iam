@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'app' => env('IAM_SERVICE_LOGIN'),
+    'app' => env('IAM_APP'),
 
     'service' => [
         'url' => env('IAM_URL'),
