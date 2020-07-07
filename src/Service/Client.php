@@ -18,7 +18,7 @@ use Geodeticca\Iam\Account\Account;
  * Class Auth
  * @package Geodeticca\Iam\Service
  */
-class Client
+abstract class Client implements ClientContract
 {
     /**
      * @var \GuzzleHttp\Client
@@ -33,13 +33,12 @@ class Client
     /**
      * @var  string
      */
-    private $token;
+    protected $token;
 
     /**
      * Client constructor.
      *
      * @param \GuzzleHttp\Client $client
-     * @param string $type
      */
     public function __construct(GuzzleClient $client)
     {
@@ -48,16 +47,14 @@ class Client
 
     /**
      * @return string
-     * @throws \Exception
      */
-    protected function token()
-    {
-        if (!$this->token) {
-            $this->token = JwtResolver::resolveTokenFromCookie();
-        }
+    abstract protected function token();
 
-        return $this->token;
-    }
+    /**
+     * @param string $token
+     * @return $this
+     */
+    abstract protected function rememberToken($token);
 
     /**
      * @return array
@@ -78,28 +75,13 @@ class Client
     }
 
     /**
-     * @param array $params
-     * @return $this
-     */
-    protected function setDefaultParams(array $params)
-    {
-        $this->params = array_merge($this->getDefaultParams(), $params);
-
-        return $this;
-    }
-
-    /**
      * @param string $header
      * @param string $value
      * @return $this
      */
-    public function setDefaultHeader($header, $value)
+    protected function setDefaultHeader($header, $value)
     {
-        $this->setDefaultParams([
-            'headers' => [
-                $header => $value,
-            ],
-        ]);
+        $this->params['headers'][$header] = $value;
 
         return $this;
     }
@@ -137,21 +119,6 @@ class Client
 
         echo $response;
         exit();
-    }
-
-    /**
-     * @param array $credentials
-     * @return mixed
-     */
-    public function login(array $credentials)
-    {
-        $endpoint = 'auth/login';
-
-        $response = $this->client->post($endpoint, [
-            'form_params' => $credentials,
-        ]);
-
-        return $this->getResult($response);
     }
 
     /**
