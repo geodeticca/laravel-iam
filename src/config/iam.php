@@ -1,8 +1,12 @@
 <?php
 
 return [
+    'app' => env('IAM_APP'),
+
     'service' => [
         'url' => env('IAM_URL'),
+        'login' => env('IAM_SERVICE_LOGIN'),
+        'password' => env('IAM_SERVICE_PASSWORD'),
     ],
 
     'jwt' => [
