@@ -7,21 +7,17 @@
 
 namespace Geodeticca\Iam\Account;
 
-use Geodeticca\User\Authority as UserAuthority;
+use Geodeticca\Group\HasGroup;
+use Geodeticca\Organization\HasOrganization;
 
 class Account implements \JsonSerializable
 {
-    use AuthIdentifierManage, RememberTokenManage;
+    use AuthIdentifierManage, RememberTokenManage, HasGroup, HasOrganization;
 
     /**
      * @var int
      */
     public $user_id;
-
-    /**
-     * @var int
-     */
-    public $organization_id;
 
     /**
      * @var string
@@ -77,9 +73,6 @@ class Account implements \JsonSerializable
         if (array_key_exists('user_id', $data)) {
             $this->user_id = (int)$data['user_id'];
         }
-        if (array_key_exists('organization_id', $data)) {
-            $this->organization_id = $data['organization_id'] ? (int)$data['organization_id'] : null;
-        }
         if (array_key_exists('forename', $data)) {
             $this->forename = $data['forename'];
         }
@@ -112,7 +105,6 @@ class Account implements \JsonSerializable
     {
         return [
             'user_id' => $this->user_id,
-            'organization_id' => $this->organization_id,
             'forename' => $this->forename,
             'surname' => $this->surname,
             'email' => $this->email,
@@ -133,14 +125,6 @@ class Account implements \JsonSerializable
             'access' => $this->getAccess(),
             'policy' => $this->getPolicy(),
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function belongsToOrganization()
-    {
-        return !is_null($this->organization_id);
     }
 
     /**
