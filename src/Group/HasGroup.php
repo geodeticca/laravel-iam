@@ -6,7 +6,7 @@
  * Time: 3:34 PM
  */
 
-namespace Geodeticca\Group;
+namespace Geodeticca\Iam\Group;
 
 trait HasGroup
 {

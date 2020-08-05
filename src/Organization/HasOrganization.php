@@ -6,7 +6,7 @@
  * Time: 3:34 PM
  */
 
-namespace Geodeticca\Organization;
+namespace Geodeticca\Iam\Organization;
 
 trait HasOrganization
 {

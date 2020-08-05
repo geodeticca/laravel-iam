@@ -7,8 +7,8 @@
 
 namespace Geodeticca\Iam\Account;
 
-use Geodeticca\Group\HasGroup;
-use Geodeticca\Organization\HasOrganization;
+use Geodeticca\Iam\Group\HasGroup;
+use Geodeticca\Iam\Organization\HasOrganization;
 
 class Account implements \JsonSerializable
 {
