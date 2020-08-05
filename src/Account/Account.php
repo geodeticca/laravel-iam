@@ -118,8 +118,6 @@ class Account implements \JsonSerializable
     {
         return [
             'user_id' => $this->user_id,
-            'group_id' => $this->group_id,
-            'organization_id' => $this->organization_id,
             'forename' => $this->forename,
             'surname' => $this->surname,
             'email' => $this->email,
@@ -136,6 +134,8 @@ class Account implements \JsonSerializable
     public function jsonSerialize()
     {
         return array_merge($this->toArray(), [
+            'group_id' => $this->group_id,
+            'organization_id' => $this->organization_id,
             'name' => $this->getName(),
             'access' => $this->getAccess(),
             'policy' => $this->getPolicy(),
