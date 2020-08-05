@@ -7,17 +7,24 @@
 
 namespace Geodeticca\Iam\Account;
 
-use Geodeticca\Iam\Group\HasGroup;
-use Geodeticca\Iam\Organization\HasOrganization;
-
 class Account implements \JsonSerializable
 {
-    use AuthIdentifierManage, RememberTokenManage, HasGroup, HasOrganization;
+    use AuthIdentifierManage, RememberTokenManage;
 
     /**
      * @var int
      */
     public $user_id;
+
+    /**
+     * @var int
+     */
+    public $group_id;
+
+    /**
+     * @var int
+     */
+    public $organization_id;
 
     /**
      * @var string
@@ -73,6 +80,12 @@ class Account implements \JsonSerializable
         if (array_key_exists('user_id', $data)) {
             $this->user_id = (int)$data['user_id'];
         }
+        if (array_key_exists('group_id', $data)) {
+            $this->group_id = (int)$data['group_id'];
+        }
+        if (array_key_exists('organization_id', $data)) {
+            $this->organization_id = (int)$data['organization_id'];
+        }
         if (array_key_exists('forename', $data)) {
             $this->forename = $data['forename'];
         }
@@ -105,6 +118,8 @@ class Account implements \JsonSerializable
     {
         return [
             'user_id' => $this->user_id,
+            'group_id' => $this->group_id,
+            'organization_id' => $this->organization_id,
             'forename' => $this->forename,
             'surname' => $this->surname,
             'email' => $this->email,
@@ -310,5 +325,21 @@ class Account implements \JsonSerializable
         }
 
         return $account;
+    }
+
+    /**
+     * @return bool
+     */
+    public function belongsToGroup()
+    {
+        return !is_null($this->group_id);
+    }
+
+    /**
+     * @return bool
+     */
+    public function belongsToOrganization()
+    {
+        return !is_null($this->organization_id);
     }
 }
