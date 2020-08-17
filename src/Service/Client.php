@@ -8,6 +8,7 @@
 namespace Geodeticca\Iam\Service;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Dense\Jwt\Auth\Sign as JwtSign;
 use Dense\Jwt\Auth\Resolver as JwtResolver;
 
 use Geodeticca\Iam\Account\Account;
@@ -26,6 +27,11 @@ abstract class Client implements ClientContract
     protected $client;
 
     /**
+     * @var \Dense\Jwt\Auth\Sign
+     */
+    protected $sign;
+
+    /**
      * @var array
      */
     protected $params = [];
@@ -36,13 +42,19 @@ abstract class Client implements ClientContract
     protected $token;
 
     /**
+     * @var \Geodeticca\Iam\Account\Account
+     */
+    protected $user;
+
+    /**
      * Client constructor.
      *
      * @param \GuzzleHttp\Client $client
      */
-    public function __construct(GuzzleClient $client)
+    public function __construct(GuzzleClient $client, JwtSign $sign)
     {
         $this->client = $client;
+        $this->sign = $sign;
     }
 
     /**
@@ -55,6 +67,27 @@ abstract class Client implements ClientContract
      * @return $this
      */
     abstract protected function rememberToken($token);
+
+    /**
+     * @return \Geodeticca\Iam\Account\Account
+     */
+    public function getUser()
+    {
+        if (!$this->user) {
+            try {
+                $claims = $this->sign->decode();
+            } catch (\Exception $e) {
+            }
+
+            if ($claims) {
+                // save user to property
+                $this->user = (new Account())
+                    ->hydrate((array)$claims->usr);
+            }
+        }
+
+        return $this->user;
+    }
 
     /**
      * @return array

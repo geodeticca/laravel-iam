@@ -7,7 +7,6 @@
 
 namespace Geodeticca\Iam\Service;
 
-use GuzzleHttp\Client as GuzzleClient;
 use Dense\Jwt\Auth\Resolver as JwtResolver;
 
 /**
@@ -18,17 +17,6 @@ use Dense\Jwt\Auth\Resolver as JwtResolver;
  */
 class StatefulClient extends Client
 {
-    /**
-     * Client constructor.
-     *
-     * @param \GuzzleHttp\Client $client
-     * @return void
-     */
-    public function __construct(GuzzleClient $client)
-    {
-        parent::__construct($client);
-    }
-
     /**
      * @return string
      * @throws \Exception

@@ -7,8 +7,6 @@
 
 namespace Geodeticca\Iam\Service;
 
-use GuzzleHttp\Client as GuzzleClient;
-
 /**
  * Zabezpecenie prihlasenia pomocou internej webovej sluzby IAM
  *
@@ -23,17 +21,14 @@ class StatelessClient extends Client
     protected $credentials = [];
 
     /**
-     * Client constructor.
-     *
-     * @param \GuzzleHttp\Client $client
      * @param array $credentials
-     * @return void
+     * @return $this
      */
-    public function __construct(GuzzleClient $client, array $credentials)
+    public function setCredentials(array $credentials)
     {
-        parent::__construct($client);
-
         $this->credentials = $credentials;
+
+        return $this;
     }
 
     /**
@@ -42,13 +37,24 @@ class StatelessClient extends Client
      */
     public function token()
     {
-        /*
         if (!$this->token) {
-            $this->login();
+            if ($this->hasLoginCredentials()) {
+                $this->login();
+            }
         }
-        */
 
         return $this->token;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasLoginCredentials()
+    {
+        return
+            isset($this->credentials['login']) &&
+            isset($this->credentials['password']) &&
+            isset($this->credentials['app']);
     }
 
     /**

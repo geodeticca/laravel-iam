@@ -121,13 +121,9 @@ class IamServiceProvider extends ServiceProvider
 
             $connection = new GuzzleClient($defaultOptions);
 
-            $credentials = [
-                'login' => Config::get('iam.service.login'),
-                'password' => Config::get('iam.service.password'),
-                'app' => Config::get('iam.app'),
-            ];
+            $sign = $this->app->make(Sign::class);
 
-            return new IamStatelessClient($connection, $credentials);
+            return new IamStatelessClient($connection, $sign);
         });
 
         $this->app->bind(IamStatefulClient::class, function () {
@@ -147,7 +143,9 @@ class IamServiceProvider extends ServiceProvider
 
             $connection = new GuzzleClient($defaultOptions);
 
-            return new IamStatefulClient($connection);
+            $sign = $this->app->make(Sign::class);
+
+            return new IamStatefulClient($connection, $sign);
         });
     }
 }
