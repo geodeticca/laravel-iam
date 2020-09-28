@@ -12,4 +12,7 @@ return [
     'password_confirmation' => 'Overenie hesla',
     'login' => 'Prihlásenie',
     'logout' => 'Odhlásenie',
+    'send_login' => 'Prihlásiť',
+    'remember_login' => 'Zapamätať',
+    'forgot_password' => 'Zabudol som heslo',
 ];
