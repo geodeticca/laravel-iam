@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
+use Dense\Informer\Mail\InformerTrait;
 use Dense\Jwt\Auth\Sign;
 
 use Geodeticca\Iam\Jwt\JwtProvider;
@@ -18,6 +19,8 @@ use Geodeticca\Iam\Commands\Generate;
 
 class IamServiceProvider extends ServiceProvider
 {
+    use InformerTrait;
+
     /**
      * @var string
      */
@@ -83,6 +86,7 @@ class IamServiceProvider extends ServiceProvider
                     return $account;
                 }
             } catch (\Exception $e) {
+                $this->sendException($e);
             }
         });
     }
