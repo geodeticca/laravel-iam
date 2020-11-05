@@ -7,7 +7,9 @@
 
 namespace Geodeticca\Iam\Account;
 
-class Account implements \JsonSerializable
+use Illuminate\Contracts\Auth\Authenticatable;
+
+class Account implements \JsonSerializable, Authenticatable
 {
     use AuthIdentifierManage, RememberTokenManage;
 
@@ -65,11 +67,6 @@ class Account implements \JsonSerializable
      * @var array
      */
     public $policy = [];
-
-    /**
-     * @var array
-     */
-    public $ownership = [];
 
     /**
      * @param array $data
@@ -265,49 +262,6 @@ class Account implements \JsonSerializable
     }
 
     /**
-     * @param string $type
-     * @param int $id
-     * @return $this
-     */
-    public function addOwnership($type, $id)
-    {
-        if (!isset($this->ownership[$type])) {
-            $this->ownership[$type] = [];
-        }
-
-        $this->ownership[$type][] = $id;
-
-        return $this;
-    }
-
-    /**
-     * @param string $type
-     * @return array
-     */
-    public function getOwnership($type)
-    {
-        $ownership = [];
-
-        if (isset($this->ownership[$type])) {
-            $ownership = array_unique($this->ownership[$type]);
-        }
-
-        return $ownership;
-    }
-
-    /**
-     * @param string $type
-     * @param int $id
-     * @return bool
-     */
-    public function hasOwnership($type, $id)
-    {
-        $ownership = $this->getOwnership($type);
-
-        return in_array($id, $ownership);
-    }
-
-    /**
      * @param array $data
      * @return \Geodeticca\Iam\Account\Account
      */
@@ -341,5 +295,15 @@ class Account implements \JsonSerializable
     public function belongsToOrganization()
     {
         return !is_null($this->organization_id);
+    }
+
+    /**
+     * Required for Laravel's Authenticatable interface compatibility
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return '';
     }
 }
