@@ -254,6 +254,14 @@ class Account implements \JsonSerializable, Authenticatable
     }
 
     /**
+     * @return bool
+     */
+    public function hasManagerPolicy()
+    {
+        return in_array(AccountAuthority::AUTHORITY_MANAGER, $this->policy);
+    }
+
+    /**
      * @return string
      */
     public function getName()
