@@ -256,9 +256,41 @@ class Account implements \JsonSerializable, Authenticatable
     /**
      * @return bool
      */
+    public function hasNoAdminPolicy()
+    {
+        return !$this->hasAdminPolicy();
+    }
+
+    /**
+     * @return bool
+     */
     public function hasManagerPolicy()
     {
         return in_array(AccountAuthority::AUTHORITY_MANAGER, $this->policy);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasNoManagerPolicy()
+    {
+        return !$this->hasManagerPolicy();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAdminRights()
+    {
+        return $this->isAdmin() || $this->hasAdminPolicy();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasNoAdminRights()
+    {
+        return !$this->hasAdminRights();
     }
 
     /**
