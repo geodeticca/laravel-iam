@@ -50,6 +50,7 @@ abstract class Client implements ClientContract
      * Client constructor.
      *
      * @param \GuzzleHttp\Client $client
+     * @param \Dense\Jwt\Auth\Sign $sign
      */
     public function __construct(GuzzleClient $client, JwtSign $sign)
     {
@@ -79,7 +80,7 @@ abstract class Client implements ClientContract
             } catch (\Exception $e) {
             }
 
-            if ($claims) {
+            if (isset($claims)) {
                 // save user to property
                 $this->user = (new Account())
                     ->hydrate((array)$claims->usr);
