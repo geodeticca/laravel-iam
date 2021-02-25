@@ -5,23 +5,23 @@
  * Time: 11:17
  */
 
-namespace Geodeticca\Iam\Service;
+namespace Geodeticca\Iam\Identity;
 
 use Dense\Jwt\Auth\Resolver as JwtResolver;
 
 /**
  * Zabezpecenie prihlasenia pomocou internej webovej sluzby IAM
  *
- * Class Auth
- * @package Geodeticca\Iam\Service
+ * Class StatefulIdentity
+ * @package Geodeticca\Iam\Identity
  */
-class StatefulClient extends Client
+class StatefulIdentity extends Identity
 {
     /**
      * @return string
      * @throws \Exception
      */
-    public function token()
+    public function token(): string
     {
         if (!$this->token) {
             $this->token = JwtResolver::resolveTokenFromCookie();
@@ -34,13 +34,13 @@ class StatefulClient extends Client
      * @param string $token
      * @return $this
      */
-    protected function rememberToken($token)
+    protected function rememberToken(string $token): self
     {
         // save token to property
         // this also serves as caching mechanism
         $this->token = $token;
 
-        // since statefull client is used, save token to cookie
+        // since statefull identity is used, save token to cookie
         JwtResolver::publishAuthCookie($this->token);
 
         return $this;
@@ -51,16 +51,15 @@ class StatefulClient extends Client
      * @return object
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function login(array $credentials)
+    public function login(array $credentials): object
     {
         $endpoint = 'auth/login';
 
-        // since statefull client is used, user input one time credentials are used
-        $response = $this->client->post($endpoint, [
-            'form_params' => $credentials,
-        ]);
+        // since statefull identity is used, user input one time credentials are used
+        // send request without any default params, only sends credentials as form-data in request body
+        $response = $this->guzzle->post($endpoint, $this->formData($credentials));
 
-        $result = $this->getResult($response);
+        $result = $this->getJson($response);
 
         $this->rememberToken($result->token);
 

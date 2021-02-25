@@ -2,6 +2,8 @@
 
 namespace Geodeticca\Iam;
 
+use Geodeticca\Iam\Identity\StatefulIdentity;
+use Geodeticca\Iam\Identity\StatelessIdentity;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,8 +14,6 @@ use Dense\Jwt\Auth\Sign;
 
 use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;
-use Geodeticca\Iam\Service\StatelessClient as IamStatelessClient;
-use Geodeticca\Iam\Service\StatefulClient as IamStatefulClient;
 use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
 
@@ -65,11 +65,23 @@ class IamServiceProvider extends ServiceProvider
             __DIR__ . '/resources/views' => resource_path('views/vendor/iam'),
         ]);
 
-        $this->app['auth']->extend('geodeticca-jwt', function () {
-            $sign = $this->app->make(Sign::class);
-            $iam = $this->app->make(IamStatefulClient::class);
+        // middlewares
+        //$this->app['router']->aliasMiddleware('iam.autologin', AutoLogin::class);
 
-            $jwtProvider = new JwtProvider($sign, $iam);
+        $this->app['auth']->extend('geodeticca-stateful', function () {
+            $sign = $this->app->make(Sign::class);
+            $identity = $this->app->make(StatefulIdentity::class);
+
+            $jwtProvider = new JwtProvider($sign, $identity);
+
+            return new JwtGuard($jwtProvider);
+        });
+
+        $this->app['auth']->extend('geodeticca-stateless', function () {
+            $sign = $this->app->make(Sign::class);
+            $identity = $this->app->make(StatelessIdentity::class);
+
+            $jwtProvider = new JwtProvider($sign, $identity);
 
             return new JwtGuard($jwtProvider);
         });
@@ -100,7 +112,7 @@ class IamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(Sign::class, function () {
+        $this->app->singleton(Sign::class, function () {
             $adapter = new JWT();
 
             return new Sign($adapter, [
@@ -110,7 +122,7 @@ class IamServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->bind(IamStatelessClient::class, function () {
+        $this->app->singleton(StatelessIdentity::class, function () {
             $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
@@ -125,14 +137,21 @@ class IamServiceProvider extends ServiceProvider
                 ]);
             }
 
-            $connection = new GuzzleClient($defaultOptions);
+            $guzzleClient = new GuzzleClient($defaultOptions);
 
             $sign = $this->app->make(Sign::class);
 
-            return new IamStatelessClient($connection, $sign);
+            $identity = new StatelessIdentity($guzzleClient, $sign);
+            $identity->setCredentials([
+                'app' => Config::get('iam.service.app'),
+                'login' => Config::get('iam.service.login'),
+                'password' => Config::get('iam.service.password'),
+            ]);
+
+            return $identity;
         });
 
-        $this->app->bind(IamStatefulClient::class, function () {
+        $this->app->singleton(StatefulIdentity::class, function () {
             $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
@@ -147,11 +166,13 @@ class IamServiceProvider extends ServiceProvider
                 ]);
             }
 
-            $connection = new GuzzleClient($defaultOptions);
+            $guzzleClient = new GuzzleClient($defaultOptions);
 
             $sign = $this->app->make(Sign::class);
 
-            return new IamStatefulClient($connection, $sign);
+            $identity = new StatefulIdentity($guzzleClient, $sign);
+
+            return $identity;
         });
     }
 }

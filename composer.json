@@ -4,12 +4,13 @@
     "keywords": ["laravel", "geodeticca", "iam"],
     "license": "MIT",
     "require": {
-        "php": ">=7.3.0",
+        "php": ">=7.4.0",
+        "dense/delivery": "dev-master",
         "dense/enum": "dev-master",
         "dense/jwt-auth": "v2.x-dev",
         "dense/laravel-assistant": "dev-master",
         "dense/laravel-informer": "dev-master",
-        "guzzlehttp/guzzle": "^6.5|^7.2",
+        "guzzlehttp/guzzle": "^7.2",
         "illuminate/auth": ">=5.8.0",
         "illuminate/support": ">=5.8.0"
     },

@@ -20,7 +20,6 @@ class JwtGuard implements Guard
 
     /**
      * @param \Illuminate\Contracts\Auth\UserProvider $provider
-     * @return void
      */
     public function __construct(UserProvider $provider)
     {
@@ -48,7 +47,7 @@ class JwtGuard implements Guard
     /**
      * @return string
      */
-    public function getTokenForRequest()
+    public function getTokenForRequest(): string
     {
         return $this->provider->getJwtToken();
     }
@@ -66,7 +65,7 @@ class JwtGuard implements Guard
      * @param array $credentials
      * @return bool
      */
-    public function attempt(array $credentials = [])
+    public function attempt(array $credentials = []): bool
     {
         $user = $this->provider->retrieveByCredentials($credentials);
 
@@ -82,7 +81,7 @@ class JwtGuard implements Guard
     /**
      * @return void
      */
-    public function logout()
+    public function logout(): void
     {
         Resolver::removeAuthCookie();
     }

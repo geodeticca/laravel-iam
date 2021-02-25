@@ -13,7 +13,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Dense\Jwt\Auth\Sign;
 use Dense\Jwt\Auth\Resolver;
 
-use Geodeticca\Iam\Service\Client as IamClient;
+use Geodeticca\Iam\Identity\IdentityContract;
 use Geodeticca\Iam\Account\Account;
 
 class JwtProvider implements UserProvider
@@ -21,22 +21,21 @@ class JwtProvider implements UserProvider
     /**
      * @var \Dense\Jwt\Auth\Sign
      */
-    protected $sign;
+    protected \Dense\Jwt\Auth\Sign $sign;
 
     /**
-     * @var \Geodeticca\Iam\Service\Client
+     * @var \Geodeticca\Iam\Identity\IdentityContract
      */
-    protected $iam;
+    protected \Geodeticca\Iam\Identity\IdentityContract $identity;
 
     /**
      * @param \Dense\Jwt\Auth\Sign $sign
-     * @param \Geodeticca\Iam\Service\Client $iam
-     * @return void
+     * @param \Geodeticca\Iam\Identity\IdentityContract $identity
      */
-    public function __construct(Sign $sign, IamClient $iam)
+    public function __construct(Sign $sign, IdentityContract $identity)
     {
         $this->sign = $sign;
-        $this->iam = $iam;
+        $this->identity = $identity;
     }
 
     /**
@@ -50,9 +49,7 @@ class JwtProvider implements UserProvider
         try {
             $claims = $this->sign->decode($identifier);
 
-            $account = Account::createFromJwt((array)$claims->usr);
-
-            return $account;
+            return Account::createFromJwt((array)$claims->usr);
         } catch (\Exception $e) {
         }
     }
@@ -60,9 +57,9 @@ class JwtProvider implements UserProvider
     /**
      * @return string
      */
-    public function getJwtToken()
+    public function getJwtToken(): string
     {
-        return $this->iam->token();
+        return $this->identity->token();
     }
 
     /**
@@ -100,7 +97,7 @@ class JwtProvider implements UserProvider
     public function retrieveByCredentials(array $credentials)
     {
         try {
-            $payload = $this->iam->login($credentials);
+            $payload = $this->identity->login($credentials);
 
             $token = $payload->token;
 

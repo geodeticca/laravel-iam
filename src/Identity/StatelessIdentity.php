@@ -5,26 +5,26 @@
  * Time: 11:17
  */
 
-namespace Geodeticca\Iam\Service;
+namespace Geodeticca\Iam\Identity;
 
 /**
  * Zabezpecenie prihlasenia pomocou internej webovej sluzby IAM
  *
- * Class Auth
- * @package Geodeticca\Iam\Service
+ * Class StatelessIdentity
+ * @package Geodeticca\Iam\Identity
  */
-class StatelessClient extends Client
+class StatelessIdentity extends Identity
 {
     /**
      * @var array
      */
-    protected $credentials = [];
+    protected array $credentials = [];
 
     /**
      * @param array $credentials
      * @return $this
      */
-    public function setCredentials(array $credentials)
+    public function setCredentials(array $credentials): self
     {
         $this->credentials = $credentials;
 
@@ -35,7 +35,7 @@ class StatelessClient extends Client
      * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function token()
+    public function token(): string
     {
         if (!$this->token) {
             if ($this->hasLoginCredentials()) {
@@ -49,7 +49,7 @@ class StatelessClient extends Client
     /**
      * @return bool
      */
-    protected function hasLoginCredentials()
+    protected function hasLoginCredentials(): bool
     {
         return
             isset($this->credentials['login']) &&
@@ -61,9 +61,10 @@ class StatelessClient extends Client
      * @param string $token
      * @return $this
      */
-    protected function rememberToken($token)
+    protected function rememberToken(string $token): self
     {
-        // since stateless client is used, save token to property
+        // save token to property
+        // this also serves as caching mechanism
         $this->token = $token;
 
         return $this;
@@ -74,16 +75,17 @@ class StatelessClient extends Client
      * @return object
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function login(array $credentials = [])
+    public function login(array $credentials = []): object
     {
         $endpoint = 'auth/login';
 
-        // since stateless client is used, configured credentials are used
-        $response = $this->client->post($endpoint, [
-            'form_params' => array_merge($this->credentials, $credentials),
-        ]);
+        $credentials = array_merge($this->credentials, $credentials);
 
-        $result = $this->getResult($response);
+        // since stateless identity is used, configured credentials are inserted into request
+        // send request without any default params, only sends credentials as form-data in request body
+        $response = $this->guzzle->post($endpoint, $this->formData($credentials));
+
+        $result = $this->getJson($response);
 
         $this->rememberToken($result->token);
 
