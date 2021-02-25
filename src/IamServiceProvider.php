@@ -24,7 +24,7 @@ class IamServiceProvider extends ServiceProvider
     /**
      * @var string
      */
-    protected $namespace = 'iam';
+    protected string $namespace = 'iam';
 
     /**
      * Bootstrap any application services.
