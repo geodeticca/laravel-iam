@@ -5,6 +5,7 @@ return [
 
     'service' => [
         'url' => env('IAM_URL'),
+        'app' => env('IAM_SERVICE_APP'),
         'login' => env('IAM_SERVICE_LOGIN'),
         'password' => env('IAM_SERVICE_PASSWORD'),
     ],

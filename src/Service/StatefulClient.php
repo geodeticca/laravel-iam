@@ -48,7 +48,8 @@ class StatefulClient extends Client
 
     /**
      * @param array $credentials
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function login(array $credentials)
     {

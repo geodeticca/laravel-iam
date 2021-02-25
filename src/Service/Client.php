@@ -59,15 +59,15 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @return string
-     */
-    abstract protected function token();
-
-    /**
      * @param string $token
      * @return $this
      */
     abstract protected function rememberToken($token);
+
+    /**
+     * @return string
+     */
+    abstract public function token();
 
     /**
      * @return \Geodeticca\Iam\Account\Account
@@ -132,7 +132,7 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @param string $data
+     * @param object $data
      * @return mixed
      */
     protected function getResult($data)
@@ -145,7 +145,7 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @param string $data
+     * @param object $data
      */
     public function debug($data)
     {
@@ -156,7 +156,8 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function authenticated()
     {
@@ -168,7 +169,8 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function extend()
     {
@@ -180,7 +182,8 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accountDetail()
     {
@@ -194,7 +197,8 @@ abstract class Client implements ClientContract
     /**
      * @param \Geodeticca\Iam\Account\Account $account
      * @param string|null $password
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accountUpdate(Account $account, $password = null)
     {
@@ -208,7 +212,8 @@ abstract class Client implements ClientContract
     }
 
     /**
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accountReset()
     {
@@ -222,7 +227,8 @@ abstract class Client implements ClientContract
     /**
      * @param string $endpoint
      * @param array $params
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function get($endpoint, array $params = [])
     {
@@ -236,7 +242,8 @@ abstract class Client implements ClientContract
     /**
      * @param string $endpoint
      * @param array $params
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function post($endpoint, array $params = [])
     {
@@ -249,7 +256,8 @@ abstract class Client implements ClientContract
 
     /**
      * @param string $endpoint
-     * @return mixed
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function put($endpoint)
     {
@@ -260,7 +268,7 @@ abstract class Client implements ClientContract
 
     /**
      * @param string $endpoint
-     * @return mixed
+     * @return object
      */
     public function delete($endpoint)
     {

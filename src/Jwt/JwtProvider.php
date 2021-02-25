@@ -58,6 +58,14 @@ class JwtProvider implements UserProvider
     }
 
     /**
+     * @return string
+     */
+    public function getJwtToken()
+    {
+        return $this->iam->token();
+    }
+
+    /**
      * @param mixed $identifier
      * @param string $token
      * @return \Geodeticca\Iam\Account\Account|null

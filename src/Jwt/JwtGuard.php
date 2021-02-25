@@ -50,9 +50,7 @@ class JwtGuard implements Guard
      */
     public function getTokenForRequest()
     {
-        $token = Resolver::resolveTokenFromCookie();
-
-        return $token;
+        return $this->provider->getJwtToken();
     }
 
     /**

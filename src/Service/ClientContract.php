@@ -31,9 +31,10 @@ interface ClientContract
 
     /**
      * @param string $endpoint
+     * @param array $params
      * @return mixed
      */
-    public function put($endpoint);
+    public function put($endpoint, array $params = []);
 
     /**
      * @param string $endpoint
