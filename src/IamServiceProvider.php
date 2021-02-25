@@ -9,8 +9,8 @@ use Illuminate\Support\ServiceProvider;
 
 use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
-use Dense\Informer\Mail\InformerTrait;
 use Dense\Jwt\Auth\Sign;
+use Dense\Informer\Mail\InformerTrait;
 
 use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;

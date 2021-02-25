@@ -25,9 +25,10 @@ interface RemoteContract
 
     /**
      * @param string $endpoint
+     * @param array $params
      * @return object
      */
-    public function put(string $endpoint): object;
+    public function put(string $endpoint, array $params = []): object;
 
     /**
      * @param string $endpoint
