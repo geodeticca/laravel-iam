@@ -63,7 +63,8 @@ class StatelessClient extends Client
      */
     protected function rememberToken($token)
     {
-        // since stateless client is used, save token to property
+        // save token to property
+        // this also serves as caching mechanism
         $this->token = $token;
 
         return $this;
@@ -78,9 +79,12 @@ class StatelessClient extends Client
     {
         $endpoint = 'auth/login';
 
-        // since stateless client is used, configured credentials are used
+        $credentials = array_merge($this->credentials, $credentials);
+
+        // since stateless identity is used, configured credentials are inserted into request
+        // send request without any default params, only sends credentials as form-data in request body
         $response = $this->client->post($endpoint, [
-            'form_params' => array_merge($this->credentials, $credentials),
+            'form_params' => $credentials,
         ]);
 
         $result = $this->getResult($response);

@@ -55,7 +55,8 @@ class StatefulClient extends Client
     {
         $endpoint = 'auth/login';
 
-        // since statefull client is used, user input one time credentials are used
+        // since statefull identity is used, user input one time credentials are used
+        // send request without any default params, only sends credentials as form-data in request body
         $response = $this->client->post($endpoint, [
             'form_params' => $credentials,
         ]);

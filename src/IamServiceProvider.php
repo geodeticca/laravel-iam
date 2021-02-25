@@ -7,15 +7,15 @@ use Illuminate\Support\ServiceProvider;
 
 use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
-use Dense\Informer\Mail\InformerTrait;
 use Dense\Jwt\Auth\Sign;
+use Dense\Informer\Mail\InformerTrait;
 
 use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;
-use Geodeticca\Iam\Service\StatelessClient as IamStatelessClient;
-use Geodeticca\Iam\Service\StatefulClient as IamStatefulClient;
 use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
+use Geodeticca\Iam\Service\StatelessClient as IamStatelessClient;
+use Geodeticca\Iam\Service\StatefulClient as IamStatefulClient;
 
 class IamServiceProvider extends ServiceProvider
 {
@@ -100,7 +100,7 @@ class IamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(Sign::class, function () {
+        $this->app->singleton(Sign::class, function () {
             $adapter = new JWT();
 
             return new Sign($adapter, [
@@ -110,7 +110,7 @@ class IamServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->bind(IamStatelessClient::class, function () {
+        $this->app->singleton(IamStatelessClient::class, function () {
             $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
@@ -129,10 +129,17 @@ class IamServiceProvider extends ServiceProvider
 
             $sign = $this->app->make(Sign::class);
 
-            return new IamStatelessClient($connection, $sign);
+            $statelessClient = new IamStatelessClient($connection, $sign);
+            $statelessClient->setCredentials([
+                'app' => Config::get('iam.service.app'),
+                'login' => Config::get('iam.service.login'),
+                'password' => Config::get('iam.service.password'),
+            ]);
+
+            return $statelessClient;
         });
 
-        $this->app->bind(IamStatefulClient::class, function () {
+        $this->app->singleton(IamStatefulClient::class, function () {
             $baseUrl = Config::get('iam.service.url') . '/';
 
             $defaultOptions = [
@@ -151,7 +158,9 @@ class IamServiceProvider extends ServiceProvider
 
             $sign = $this->app->make(Sign::class);
 
-            return new IamStatefulClient($connection, $sign);
+            $statefulClient = new IamStatefulClient($connection, $sign);
+
+            return $statefulClient;
         });
     }
 }

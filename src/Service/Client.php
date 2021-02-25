@@ -70,6 +70,12 @@ abstract class Client implements ClientContract
     abstract public function token();
 
     /**
+     * @param array $credentials
+     * @return object
+     */
+    abstract public function login(array $credentials);
+
+    /**
      * @return \Geodeticca\Iam\Account\Account
      */
     public function getUser()
@@ -256,10 +262,11 @@ abstract class Client implements ClientContract
 
     /**
      * @param string $endpoint
+     * @param array $params
      * @return object
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function put($endpoint)
+    public function put($endpoint, array $params = [])
     {
         $response = $this->client->put($endpoint, $this->params());
 
@@ -269,6 +276,7 @@ abstract class Client implements ClientContract
     /**
      * @param string $endpoint
      * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function delete($endpoint)
     {
