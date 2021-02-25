@@ -64,17 +64,17 @@
             "source": {
                 "type": "git",
                 "url": "https://bitbucket.org/dense-team/delivery.git",
-                "reference": "21e1847819a0710cadb01d2ab756025c79338bd0"
+                "reference": "9266fd417d4e7c41612c296c71fbe3d5315d9129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/dense-team/delivery/get/21e1847819a0710cadb01d2ab756025c79338bd0.zip",
-                "reference": "21e1847819a0710cadb01d2ab756025c79338bd0",
+                "url": "https://bitbucket.org/dense-team/delivery/get/9266fd417d4e7c41612c296c71fbe3d5315d9129.zip",
+                "reference": "9266fd417d4e7c41612c296c71fbe3d5315d9129",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.2",
-                "php": ">=7.3.0"
+                "php": ">=7.4.0"
             },
             "type": "library",
             "autoload": {
@@ -93,7 +93,7 @@
                 "client",
                 "wrapper"
             ],
-            "time": "2021-02-25T09:52:47+00:00"
+            "time": "2021-02-25T11:54:28+00:00"
         },
         {
             "name": "dense/enum",
