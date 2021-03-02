@@ -2,8 +2,6 @@
 
 namespace Geodeticca\Iam;
 
-use Geodeticca\Iam\Identity\StatefulIdentity;
-use Geodeticca\Iam\Identity\StatelessIdentity;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,10 +10,13 @@ use Firebase\JWT\JWT;
 use Dense\Jwt\Auth\Sign;
 use Dense\Informer\Mail\InformerTrait;
 
+use Geodeticca\Iam\Identity\StatefulIdentity;
+use Geodeticca\Iam\Identity\StatelessIdentity;
 use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;
 use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
+use Geodeticca\Iam\Middleware\AutoLogin;
 
 class IamServiceProvider extends ServiceProvider
 {
@@ -66,7 +67,7 @@ class IamServiceProvider extends ServiceProvider
         ]);
 
         // middlewares
-        //$this->app['router']->aliasMiddleware('iam.autologin', AutoLogin::class);
+        $this->app['router']->aliasMiddleware('iam.autologin', AutoLogin::class);
 
         $this->app['auth']->extend('geodeticca-stateful', function () {
             $sign = $this->app->make(Sign::class);

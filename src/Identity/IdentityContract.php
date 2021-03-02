@@ -14,4 +14,9 @@ interface IdentityContract
      * @return object
      */
     public function login(array $credentials): object;
+
+    /**
+     * @return string
+     */
+    public function token(): string;
 }
