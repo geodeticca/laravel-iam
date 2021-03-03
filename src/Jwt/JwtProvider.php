@@ -11,7 +11,6 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 use Dense\Jwt\Auth\Sign;
-use Dense\Jwt\Auth\Resolver;
 
 use Geodeticca\Iam\Service\Client as IamClient;
 use Geodeticca\Iam\Account\Account;
@@ -99,22 +98,20 @@ class JwtProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
+        $account = null;
+
         try {
             $payload = $this->iam->login($credentials);
 
-            $token = $payload->token;
-
-            $claims = $this->sign->decode($token);
+            $claims = $this->sign->decode($payload->token);
 
             if (!empty($claims)) {
-                Resolver::publishAuthCookie($token);
-
                 $account = Account::createFromJwt((array)$claims->usr);
-
-                return $account;
             }
         } catch (\Exception $e) {
         }
+
+        return $account;
     }
 
     /**
