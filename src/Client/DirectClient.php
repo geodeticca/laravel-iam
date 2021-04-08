@@ -7,12 +7,13 @@
 
 namespace Geodeticca\Iam\Client;
 
+use Dense\Delivery\Result\Hydrator;
 use Geodeticca\Iam\Identity\HasIdentity;
 use Geodeticca\Iam\Identity\IdentityContract;
 
 class DirectClient
 {
-    use HasIdentity;
+    use Hydrator, HasIdentity;
 
     /**
      * DirectClient constructor.

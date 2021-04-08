@@ -7,6 +7,7 @@
 
 namespace Geodeticca\Iam\Client;
 
+use Dense\Delivery\Result\Hydrator;
 use Geodeticca\Iam\Identity\HasIdentity;
 use Geodeticca\Iam\Remote\HasRemote;
 use Geodeticca\Iam\Identity\IdentityContract;
@@ -14,7 +15,7 @@ use Geodeticca\Iam\Remote\RemoteContract;
 
 class ProxyClient
 {
-    use HasIdentity, HasRemote;
+    use Hydrator, HasIdentity, HasRemote;
 
     /**
      * RemoteClient constructor.
