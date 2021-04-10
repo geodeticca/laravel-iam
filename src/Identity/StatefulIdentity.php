@@ -57,9 +57,11 @@ class StatefulIdentity extends Identity
 
         // since statefull identity is used, user input one time credentials are used
         // send request without any default params, only sends credentials as form-data in request body
-        $response = $this->guzzle->post($endpoint, $this->formData($credentials));
+        $response = $this->guzzle->post($endpoint, [
+            'form_params' => $credentials,
+        ]);
 
-        $result = $this->getJson($response);
+        $result = $this->getJsonResult($response);
 
         $this->rememberToken($result->token);
 

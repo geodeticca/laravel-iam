@@ -83,9 +83,11 @@ class StatelessIdentity extends Identity
 
         // since stateless identity is used, configured credentials are inserted into request
         // send request without any default params, only sends credentials as form-data in request body
-        $response = $this->guzzle->post($endpoint, $this->formData($credentials));
+        $response = $this->guzzle->post($endpoint, [
+            'form_params' => $credentials,
+        ]);
 
-        $result = $this->getJson($response);
+        $result = $this->getJsonResult($response);
 
         $this->rememberToken($result->token);
 

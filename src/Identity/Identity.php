@@ -89,7 +89,7 @@ abstract class Identity implements IdentityContract
 
         $response = $this->guzzle->post($endpoint, $this->buildFormData());
 
-        return $this->getJson($response);
+        return $this->getJsonResult($response);
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class Identity implements IdentityContract
 
         $response = $this->guzzle->post($endpoint, $this->buildFormData());
 
-        return $this->getJson($response);
+        return $this->getJsonResult($response);
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class Identity implements IdentityContract
 
         $response = $this->guzzle->get($endpoint, $this->buildQuery());
 
-        return $this->getJson($response);
+        return $this->getJsonResult($response);
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class Identity implements IdentityContract
         ]);
         $response = $this->guzzle->post($endpoint, $this->buildFormData($accountData));
 
-        return $this->getJson($response);
+        return $this->getJsonResult($response);
     }
 
     /**
@@ -146,6 +146,6 @@ abstract class Identity implements IdentityContract
 
         $response = $this->guzzle->post($endpoint, $this->buildFormData());
 
-        return $this->getJson($response);
+        return $this->getJsonResult($response);
     }
 }
