@@ -27,9 +27,18 @@
         </div>
 
         <div class="form-group row">
+            <label for="login" class="col-md-4 col-form-label text-md-right">{{ __('iam::account.login') }}</label>
+            <div class="col-md-6">
+                <input id="login" type="text" class="form-control{{ $errors->has('login') ? ' is-invalid' : '' }}" name="login" value="{{ old('login', $account->login) }}">
+
+                @include('assistant::validation.field', ['field' => 'login'])
+            </div>
+        </div>
+
+        <div class="form-group row">
             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('iam::account.email') }}</label>
             <div class="col-md-6">
-                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email', $account->email) }}" required>
+                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email', $account->email) }}">
 
                 @include('assistant::validation.field', ['field' => 'email'])
             </div>

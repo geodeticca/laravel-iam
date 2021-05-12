@@ -1,90 +1,77 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Web\Auth;
 
 use App\Http\Controllers\Controller;
 
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\View;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-    use ThrottlesLogins;
+    use AuthenticatesUsers;
 
     /**
+     * Show the application's login form.
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function showLoginForm()
     {
-        return View::make('iam::auth.login');
+        return view('iam::auth.login');
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|void
-     * @throws \Illuminate\Validation\ValidationException
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
      */
-    public function login(Request $request)
+    protected function attemptLogin(Request $request)
     {
-        $validation = [
-            $this->username() => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'max:255'],
-        ];
-
-        $this->validate($request, $validation);
-
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-
-        $credentials = [
-            'login' => $request->input($this->username()),
-            'password' => $request->input('password'),
-        ];
-
-        $attempt = $this->guard()->attempt($credentials);
-
-        if ($attempt) {
-            $this->clearLoginAttempts($request);
-
-            return Redirect::intended('/');
-        }
-
-        throw ValidationException::withMessages([
-            $this->username() => [trans('auth.failed')],
-        ]);
+        return $this->guard()->attempt(
+            $this->credentials($request)
+        );
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function logout(Request $request)
+    protected function sendLoginResponse(Request $request)
     {
-        $this->guard()->logout();
+        $this->clearLoginAttempts($request);
 
-        return Redirect::to('/');
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect()->intended($this->redirectPath());
     }
 
     /**
-     * @return \Illuminate\Contracts\Auth\Guard
-     */
-    protected function guard()
-    {
-        return Auth::guard();
-    }
-
-    /**
+     * Get the login username to be used by the controller.
+     *
      * @return string
      */
     public function username()
     {
         return 'login';
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
     }
 }

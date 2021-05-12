@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
-use Geodeticca\Iam\Service\StatefulClient as IamStatefulClient;
+use Geodeticca\Iam\Identity\StatefulIdentity;
 
 class AccountController extends Controller
 {
@@ -20,7 +20,7 @@ class AccountController extends Controller
 
     public function account(
         Request $request,
-        IamStatefulClient $iam
+        StatefulIdentity $iam
     ) {
         $auth = Auth::user();
 
