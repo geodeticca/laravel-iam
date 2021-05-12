@@ -21,6 +21,15 @@ This command will generate controllers in App\Http\Conrollers\Iam directory.
 
 ## Configuration
 
+Add these lines on top of the web routes configration file in routes/web.php. 
+```
+Auth::routes([
+    'register' => false,
+    'verify' => false,
+    'reset' => false,
+]);
+```
+
 If you are running lumen you need to add following lines to bootstrap/app.php file.
 ```
 $app->register(\Geodeticca\Iam\IamServiceProvider::class);
