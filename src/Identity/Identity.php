@@ -32,7 +32,7 @@ abstract class Identity implements IdentityContract
     /**
      * @var string
      */
-    protected $token;
+    protected string $token = '';
 
     /**
      * Identity constructor.

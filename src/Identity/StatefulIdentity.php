@@ -40,7 +40,7 @@ class StatefulIdentity extends Identity
         // this also serves as caching mechanism
         $this->token = $token;
 
-        // since statefull identity is used, save token to cookie
+        // since stateful identity is used, save token to cookie
         JwtResolver::publishAuthCookie($this->token);
 
         return $this;
@@ -55,7 +55,7 @@ class StatefulIdentity extends Identity
     {
         $endpoint = 'auth/login';
 
-        // since statefull identity is used, user input one time credentials are used
+        // since stateful identity is used, user input one time credentials are used
         // send request without any default params, only sends credentials as form-data in request body
         $result = $this->post($endpoint, $credentials);
 
