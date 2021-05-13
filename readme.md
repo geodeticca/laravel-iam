@@ -11,6 +11,7 @@ Package that it is required is dense\enum package which is just few simple class
 Run following composer command.
 ```
 composer require geodeticca/iam
+composer require laravel/ui
 ```
 
 Run artisan command
