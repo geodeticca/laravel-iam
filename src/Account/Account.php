@@ -7,26 +7,22 @@
 
 namespace Geodeticca\Iam\Account;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-class Account implements \JsonSerializable, Authenticatable
+use Geodeticca\Iam\User\PolicyManagement as UserPolicyManagement;
+use Geodeticca\Iam\User\Authority;
+use Geodeticca\Iam\User\HasPolicy;
+use Geodeticca\Iam\Organization\HasOrganizations;
+use Geodeticca\Iam\Group\HasGroups;
+
+class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSerializable
 {
-    use AuthIdentifierManage, RememberTokenManage;
+    use AuthIdentifierManage, RememberTokenManage, HasPolicy, HasGroups, HasOrganizations;
 
     /**
      * @var int
      */
     public $user_id;
-
-    /**
-     * @var int
-     */
-    public $group_id;
-
-    /**
-     * @var int
-     */
-    public $organization_id;
 
     /**
      * @var string
@@ -56,17 +52,12 @@ class Account implements \JsonSerializable, Authenticatable
     /**
      * @var string
      */
-    public $authority = AccountAuthority::AUTHORITY_REGULAR;
+    public $authority = Authority::AUTHORITY_REGULAR;
 
     /**
      * @var array
      */
     public $access = [];
-
-    /**
-     * @var array
-     */
-    public $policy = [];
 
     /**
      * @param array $data
@@ -76,12 +67,6 @@ class Account implements \JsonSerializable, Authenticatable
     {
         if (array_key_exists('user_id', $data)) {
             $this->user_id = (int)$data['user_id'];
-        }
-        if (array_key_exists('group_id', $data)) {
-            $this->group_id = (int)$data['group_id'];
-        }
-        if (array_key_exists('organization_id', $data)) {
-            $this->organization_id = (int)$data['organization_id'];
         }
         if (array_key_exists('forename', $data)) {
             $this->forename = $data['forename'];
@@ -131,12 +116,34 @@ class Account implements \JsonSerializable, Authenticatable
     public function jsonSerialize()
     {
         return array_merge($this->toArray(), [
-            'group_id' => $this->group_id,
-            'organization_id' => $this->organization_id,
             'name' => $this->getName(),
             'access' => $this->getAccess(),
             'policy' => $this->getPolicy(),
+            'groups' => $this->getGroups(),
+            'organizations' => $this->getOrganizations(),
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param string $scope
+     * @param int $permission
+     * @return $this
+     */
+    public function setAccess($scope, $permission)
+    {
+        if ($permission >= 0 && $permission <= 7) {
+            $this->access[$scope] = (int)$permission;
+        }
+
+        return $this;
     }
 
     /**
@@ -146,19 +153,13 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function addAccess($scope, $permission)
     {
-        if ($permission > 0 && $permission <= 7) {
-            $this->access[$scope] = (int)$permission;
+        if ($permission >= 0 && $permission <= 7) {
+            $access = $this->access[$scope] ?? 0;
+
+            $this->access[$scope] = (int)$access | (int)$permission;
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccess()
-    {
-        return $this->access;
     }
 
     /**
@@ -172,9 +173,13 @@ class Account implements \JsonSerializable, Authenticatable
             return 7;
         }
 
-        $permission = $this->access[$scope] ?? 0;
+        if ($this->hasAdminPolicy()) {
+            return 7;
+        }
 
-        return $permission & $action;
+        $access = $this->access[$scope] ?? 0;
+
+        return (int)$access & (int)$action;
     }
 
     /**
@@ -182,7 +187,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isAdmin()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_ADMIN;
+        return $this->authority === Authority::AUTHORITY_ADMIN;
     }
 
     /**
@@ -198,7 +203,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isSystemUser()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_SYSTEM;
+        return $this->authority === Authority::AUTHORITY_SYSTEM;
     }
 
     /**
@@ -214,7 +219,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isRegular()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_REGULAR;
+        return $this->authority === Authority::AUTHORITY_REGULAR;
     }
 
     /**
@@ -223,58 +228,6 @@ class Account implements \JsonSerializable, Authenticatable
     public function isNotRegular()
     {
         return !$this->isRegular();
-    }
-
-    /**
-     * @param string $group
-     * @param string $authority
-     * @return $this
-     */
-    public function addPolicy($group, $authority)
-    {
-        $this->policy[$group] = $authority;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPolicy()
-    {
-        return $this->policy;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasAdminPolicy()
-    {
-        return in_array(AccountAuthority::AUTHORITY_ADMIN, $this->policy);
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasNoAdminPolicy()
-    {
-        return !$this->hasAdminPolicy();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasManagerPolicy()
-    {
-        return in_array(AccountAuthority::AUTHORITY_MANAGER, $this->policy);
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasNoManagerPolicy()
-    {
-        return !$this->hasManagerPolicy();
     }
 
     /**
@@ -318,23 +271,15 @@ class Account implements \JsonSerializable, Authenticatable
             $account->policy = (array)$data['policy'];
         }
 
+        if (array_key_exists('groups', $data)) {
+            $account->setGroups((array)$data['groups']);
+        }
+
+        if (array_key_exists('organizations', $data)) {
+            $account->setOrganizations((array)$data['organizations']);
+        }
+
         return $account;
-    }
-
-    /**
-     * @return bool
-     */
-    public function belongsToGroup()
-    {
-        return !is_null($this->group_id);
-    }
-
-    /**
-     * @return bool
-     */
-    public function belongsToOrganization()
-    {
-        return !is_null($this->organization_id);
     }
 
     /**
