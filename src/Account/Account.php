@@ -9,15 +9,16 @@ namespace Geodeticca\Iam\Account;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-use Geodeticca\Iam\User\PolicyManagement as UserPolicyManagement;
+use Geodeticca\Iam\User\PolicyManagement;
 use Geodeticca\Iam\User\Authority;
 use Geodeticca\Iam\User\HasPolicy;
-use Geodeticca\Iam\Organization\HasOrganizations;
 use Geodeticca\Iam\Group\HasGroups;
+use Geodeticca\Iam\Organization\HasOrganizations;
+use Geodeticca\Iam\App\HasApps;
 
-class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSerializable
+class Account implements AuthenticatableContract, PolicyManagement, \JsonSerializable
 {
-    use AuthIdentifierManage, RememberTokenManage, HasPolicy, HasGroups, HasOrganizations;
+    use Authenticatable, HasGroups, HasOrganizations, HasApps, HasPolicy;
 
     /**
      * @var int
@@ -58,6 +59,14 @@ class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSer
      * @var array
      */
     public $access = [];
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return trim(ucfirst(mb_strtolower($this->forename)) . ' ' . ucfirst(mb_strtolower($this->surname)));
+    }
 
     /**
      * @param array $data
@@ -115,12 +124,18 @@ class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSer
      */
     public function jsonSerialize()
     {
-        return array_merge($this->toArray(), [
+        $data = $this->toArray();
+
+        unset($data['password']);
+        unset($data['remember_token']);
+
+        return array_merge($data, [
             'name' => $this->getName(),
-            'access' => $this->getAccess(),
-            'policy' => $this->getPolicy(),
             'groups' => $this->getGroups(),
             'organizations' => $this->getOrganizations(),
+            'apps' => $this->getApps(),
+            'policy' => $this->getPolicy(),
+            'access' => $this->getAccess(),
         ]);
     }
 
@@ -247,14 +262,6 @@ class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSer
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return trim(ucfirst(mb_strtolower($this->forename)) . ' ' . ucfirst(mb_strtolower($this->surname)));
-    }
-
-    /**
      * @param array $data
      * @return \Geodeticca\Iam\Account\Account
      */
@@ -262,14 +269,6 @@ class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSer
     {
         $account = new self();
         $account->hydrate($data);
-
-        if (array_key_exists('access', $data)) {
-            $account->access = (array)$data['access'];
-        }
-
-        if (array_key_exists('policy', $data)) {
-            $account->policy = (array)$data['policy'];
-        }
 
         if (array_key_exists('groups', $data)) {
             $account->setGroups((array)$data['groups']);
@@ -279,16 +278,18 @@ class Account implements AuthenticatableContract, UserPolicyManagement, \JsonSer
             $account->setOrganizations((array)$data['organizations']);
         }
 
-        return $account;
-    }
+        if (array_key_exists('apps', $data)) {
+            $account->setApps((array)$data['apps']);
+        }
 
-    /**
-     * Required for Laravel's Authenticatable interface compatibility
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return '';
+        if (array_key_exists('policy', $data)) {
+            $account->policy = (array)$data['policy'];
+        }
+
+        if (array_key_exists('access', $data)) {
+            $account->access = (array)$data['access'];
+        }
+
+        return $account;
     }
 }
