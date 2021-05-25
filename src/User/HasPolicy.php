@@ -22,7 +22,7 @@ trait HasPolicy
      */
     public function addPolicy($policy)
     {
-        $this->policy[] = $policy;
+        $this->policy[] = (string)$policy;
 
         return $this;
     }

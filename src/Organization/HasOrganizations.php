@@ -31,7 +31,7 @@ trait HasOrganizations
      */
     public function getOrganizations()
     {
-        return array_unique($this->organizations);
+        return array_values(array_unique($this->organizations));
     }
 
     /**
@@ -40,10 +40,7 @@ trait HasOrganizations
      */
     public function setOrganizations(array $organizations)
     {
-        $this->organizations = [];
-        foreach ($organizations as $organizationId) {
-            $this->addOrganization($organizationId);
-        }
+        $this->organizations = array_values(array_unique(array_map('intval', $organizations)));
 
         return $this;
     }

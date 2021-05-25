@@ -33,19 +33,9 @@ class StatelessIdentity extends Identity
 
     /**
      * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function token(): string
     {
-        // rekurzia, nutne opravit
-        /*
-        if (!$this->token) {
-            if ($this->hasLoginCredentials()) {
-                $this->login();
-            }
-        }
-        */
-
         return $this->token;
     }
 

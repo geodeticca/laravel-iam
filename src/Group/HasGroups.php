@@ -31,7 +31,7 @@ trait HasGroups
      */
     public function getGroups()
     {
-        return array_unique($this->groups);
+        return array_values(array_unique($this->groups));
     }
 
     /**
@@ -40,10 +40,7 @@ trait HasGroups
      */
     public function setGroups(array $groups)
     {
-        $this->groups = [];
-        foreach ($groups as $groupId) {
-            $this->addGroup($groupId);
-        }
+        $this->groups = array_values(array_unique(array_map('intval', $groups)));
 
         return $this;
     }
