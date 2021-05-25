@@ -4,7 +4,7 @@ namespace Geodeticca\Iam\Account;
 
 use Dense\Enum\Core\EnumAbstract;
 
-class AccountAuthority extends EnumAbstract
+class Authority extends EnumAbstract
 {
     const AUTHORITY_ADMIN = 'ADMIN';
     const AUTHORITY_MANAGER = 'MANAGER';
