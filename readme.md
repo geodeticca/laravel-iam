@@ -45,7 +45,6 @@ Add these settings to config/auth.php file.
 
     'api' => [
         'driver' => 'geodeticca-stateless',
-        'driver' => 'geodeticca-api',
     ],
 ],
 ```
