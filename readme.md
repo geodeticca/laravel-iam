@@ -31,6 +31,24 @@ Auth::routes([
 ]);
 ```
 
+Add these settings to config/auth.php file.
+```
+'defaults' => [
+    'guard' => 'web',
+    'passwords' => 'users',
+],
+
+'guards' => [
+    'web' => [
+        'driver' => 'geodeticca-stateful',
+    ],
+
+    'api' => [
+        'driver' => 'geodeticca-stateless',
+    ],
+],
+```
+
 If you are running lumen you need to add following lines to bootstrap/app.php file.
 ```
 $app->register(\Geodeticca\Iam\IamServiceProvider::class);
