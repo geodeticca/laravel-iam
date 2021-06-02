@@ -39,7 +39,7 @@ class Remote implements RemoteContract
     {
         $this->mergeDefaultParams([
             'headers' => [
-                'Authorization' => JwtResolver::createAuthHeader($token),
+                'Authorization' => JwtResolver::createAuthString($token),
             ],
         ]);
 
