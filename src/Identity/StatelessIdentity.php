@@ -32,35 +32,14 @@ class StatelessIdentity extends Identity
     }
 
     /**
-     * @return string
-     */
-    public function token(): string
-    {
-        return $this->token;
-    }
-
-    /**
      * @return bool
      */
-    protected function hasLoginCredentials(): bool
+    protected function hasCredentials(): bool
     {
         return
             isset($this->credentials['login']) &&
             isset($this->credentials['password']) &&
             isset($this->credentials['app']);
-    }
-
-    /**
-     * @param string $token
-     * @return $this
-     */
-    protected function rememberToken(string $token): self
-    {
-        // save token to property
-        // this also serves as caching mechanism
-        $this->token = $token;
-
-        return $this;
     }
 
     /**
@@ -72,7 +51,9 @@ class StatelessIdentity extends Identity
     {
         $endpoint = 'auth/login';
 
-        $credentials = array_merge($this->credentials, $credentials);
+        if ($this->hasCredentials()) {
+            $credentials = array_merge($this->credentials, $credentials);
+        }
 
         // since stateless identity is used, configured credentials are inserted into request
         // send request without any default params, only sends credentials as form-data in request body

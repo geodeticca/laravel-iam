@@ -50,12 +50,22 @@ abstract class Identity implements IdentityContract
      * @param string $token
      * @return $this
      */
-    abstract protected function rememberToken(string $token): self;
+    protected function rememberToken(string $token): self
+    {
+        // save token to property
+        // this also serves as caching mechanism
+        $this->token = $token;
+
+        return $this;
+    }
 
     /**
      * @return string
      */
-    abstract public function token(): string;
+    public function token(): string
+    {
+        return $this->token;
+    }
 
     /**
      * @param array $credentials
