@@ -52,6 +52,8 @@ class IamServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__ . '/config/iam.php', 'iam');
 
+        $this->mergeConfigFrom(__DIR__ . '/config/auth.php', 'auth');
+
         // langs
         $this->loadTranslationsFrom(__DIR__ . '/resources/lang', $this->namespace);
 
