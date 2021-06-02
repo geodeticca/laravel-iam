@@ -87,7 +87,6 @@ class IamServiceProvider extends ServiceProvider
             return new JwtGuard($jwtProvider);
         });
 
-        /*
         $this->app['auth']->viaRequest('geodeticca-api', function () {
             $sign = $this->app->make(Sign::class);
 
@@ -105,7 +104,6 @@ class IamServiceProvider extends ServiceProvider
                 return $account;
             }
         });
-        */
     }
 
     /**
