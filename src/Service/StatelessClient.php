@@ -72,7 +72,9 @@ class StatelessClient extends Client
     {
         $endpoint = 'auth/login';
 
-        $credentials = array_merge($this->credentials, $credentials);
+        if ($this->hasLoginCredentials()) {
+            $credentials = array_merge($this->credentials, $credentials);
+        }
 
         // since stateless identity is used, configured credentials are inserted into request
         // send request without any default params, only sends credentials as form-data in request body
