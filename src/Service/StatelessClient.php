@@ -32,21 +32,6 @@ class StatelessClient extends Client
     }
 
     /**
-     * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function token()
-    {
-        if (!$this->token) {
-            if ($this->hasLoginCredentials()) {
-                $this->login();
-            }
-        }
-
-        return $this->token;
-    }
-
-    /**
      * @return bool
      */
     protected function hasLoginCredentials()
@@ -55,6 +40,14 @@ class StatelessClient extends Client
             isset($this->credentials['login']) &&
             isset($this->credentials['password']) &&
             isset($this->credentials['app']);
+    }
+
+    /**
+     * @return string
+     */
+    public function token()
+    {
+        return $this->token;
     }
 
     /**

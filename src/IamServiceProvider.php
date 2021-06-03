@@ -86,9 +86,7 @@ class IamServiceProvider extends ServiceProvider
             }
 
             if ($claims) {
-                $account = Account::createFromJwt((array)$claims->usr);
-
-                return $account;
+                return Account::createFromJwt((array)$claims->usr);
             }
         });
     }

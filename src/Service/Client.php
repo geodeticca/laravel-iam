@@ -106,7 +106,7 @@ abstract class Client implements ClientContract
 
             $this->params = [
                 'headers' => [
-                    'Authorization' => JwtResolver::createAuthHeader($token),
+                    'Authorization' => JwtResolver::createAuthString($token),
                 ],
             ];
         }
