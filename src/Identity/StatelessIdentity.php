@@ -32,14 +32,6 @@ class StatelessIdentity extends Identity
     }
 
     /**
-     * @return string
-      */
-    public function token(): string
-    {
-        return $this->token;
-    }
-
-    /**
      * @return bool
      */
     protected function hasLoginCredentials(): bool
@@ -48,6 +40,14 @@ class StatelessIdentity extends Identity
             isset($this->credentials['login']) &&
             isset($this->credentials['password']) &&
             isset($this->credentials['app']);
+    }
+
+    /**
+     * @return string
+      */
+    public function token(): string
+    {
+        return $this->token;
     }
 
     /**

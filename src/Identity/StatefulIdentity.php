@@ -41,7 +41,7 @@ class StatefulIdentity extends Identity
         $this->token = $token;
 
         // since stateful identity is used, save token to cookie
-        JwtResolver::publishAuthCookie($this->token);
+        JwtResolver::saveAuthCookie($this->token);
 
         return $this;
     }
