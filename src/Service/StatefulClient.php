@@ -41,7 +41,7 @@ class StatefulClient extends Client
         $this->token = $token;
 
         // since statefull client is used, save token to cookie
-        JwtResolver::publishAuthCookie($this->token);
+        JwtResolver::saveAuthCookie($this->token);
 
         return $this;
     }
