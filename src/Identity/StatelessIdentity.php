@@ -66,7 +66,6 @@ class StatelessIdentity extends Identity
     /**
      * @param array $credentials
      * @return object
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function login(array $credentials = []): object
     {
