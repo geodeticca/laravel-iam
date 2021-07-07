@@ -12,7 +12,7 @@ trait AuthIdentifierManage
     /**
      * @return string
      */
-    public function getAuthIdentifierName()
+    public function getAuthIdentifierName(): string
     {
         return 'user_id';
     }
@@ -20,7 +20,7 @@ trait AuthIdentifierManage
     /**
      * @return int
      */
-    public function getAuthIdentifier()
+    public function getAuthIdentifier(): int
     {
         $identifier = $this->getAuthIdentifierName();
 

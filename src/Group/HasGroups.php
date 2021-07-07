@@ -13,15 +13,15 @@ trait HasGroups
     /**
      * @var array
      */
-    public $groups = [];
+    public array $groups = [];
 
     /**
      * @param int $groupId
      * @return $this
      */
-    public function addGroup($groupId)
+    public function addGroup(int $groupId): self
     {
-        $this->groups[] = (int)$groupId;
+        $this->groups[] = $groupId;
 
         return $this;
     }
@@ -29,7 +29,7 @@ trait HasGroups
     /**
      * @return array
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return array_values(array_unique($this->groups));
     }
@@ -38,7 +38,7 @@ trait HasGroups
      * @param array $groups
      * @return $this
      */
-    public function setGroups(array $groups)
+    public function setGroups(array $groups): self
     {
         $this->groups = array_values(array_unique(array_map('intval', $groups)));
 
@@ -49,7 +49,7 @@ trait HasGroups
      * @param int $groupId
      * @return bool
      */
-    public function hasGroup($groupId)
+    public function hasGroup(int $groupId): bool
     {
         return in_array($groupId, $this->groups);
     }
@@ -57,7 +57,7 @@ trait HasGroups
     /**
      * @return bool
      */
-    public function belongsToGroup()
+    public function belongsToGroup(): bool
     {
         return !empty($this->groups);
     }

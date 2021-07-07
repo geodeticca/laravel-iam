@@ -14,7 +14,7 @@ class AccountAuthority extends EnumAbstract
     /**
      * @return array
      */
-    public static function getEnums()
+    public static function getEnums(): array
     {
         return [
             self::AUTHORITY_ADMIN => __('iam::enum.account_authority_admin'),

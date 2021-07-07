@@ -61,6 +61,11 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     public $access = [];
 
     /**
+     * @var int
+     */
+    public $current_organization;
+
+    /**
      * @return string
      */
     public function getName()
@@ -136,7 +141,27 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             'apps' => $this->getApps(),
             'policy' => $this->getPolicy(),
             'access' => $this->getAccess(),
+            'current_organization' => $this->getCurrentOrganization(),
         ]);
+    }
+
+    /**
+     * @param int $organizationId
+     * @return $this
+     */
+    public function setCurrentOrganization($organizationId)
+    {
+        $this->current_organization = (int)$organizationId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentOrganization()
+    {
+        return $this->current_organization;
     }
 
     /**
@@ -288,6 +313,10 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
 
         if (array_key_exists('access', $data)) {
             $account->access = (array)$data['access'];
+        }
+
+        if (array_key_exists('current_organization', $data)) {
+            $account->current_organization = (array)$data['current_organization'];
         }
 
         return $account;

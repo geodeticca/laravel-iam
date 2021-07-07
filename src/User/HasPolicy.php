@@ -14,15 +14,15 @@ trait HasPolicy
     /**
      * @var array
      */
-    public $policy = [];
+    public array $policy = [];
 
     /**
      * @param string $policy
      * @return $this
      */
-    public function addPolicy($policy)
+    public function addPolicy(string $policy): self
     {
-        $this->policy[] = (string)$policy;
+        $this->policy[] = $policy;
 
         return $this;
     }
@@ -30,7 +30,7 @@ trait HasPolicy
     /**
      * @return array
      */
-    public function getPolicy()
+    public function getPolicy(): array
     {
         return array_unique($this->policy);
     }
@@ -38,7 +38,7 @@ trait HasPolicy
     /**
      * @return bool
      */
-    public function hasAdminPolicy()
+    public function hasAdminPolicy(): bool
     {
         return in_array(GroupPolicy::POLICY_ADMIN, $this->policy);
     }
@@ -46,7 +46,7 @@ trait HasPolicy
     /**
      * @return bool
      */
-    public function hasNoAdminPolicy()
+    public function hasNoAdminPolicy(): bool
     {
         return !$this->hasAdminPolicy();
     }
@@ -54,7 +54,7 @@ trait HasPolicy
     /**
      * @return bool
      */
-    public function hasManagerPolicy()
+    public function hasManagerPolicy(): bool
     {
         return in_array(GroupPolicy::POLICY_MANAGER, $this->policy);
     }
@@ -62,7 +62,7 @@ trait HasPolicy
     /**
      * @return bool
      */
-    public function hasNoManagerPolicy()
+    public function hasNoManagerPolicy(): bool
     {
         return !$this->hasManagerPolicy();
     }

@@ -13,15 +13,15 @@ trait HasOrganizations
     /**
      * @var array
      */
-    public $organizations = [];
+    public array $organizations = [];
 
     /**
      * @param int $organizationId
      * @return $this
      */
-    public function addOrganization($organizationId)
+    public function addOrganization(int $organizationId): self
     {
-        $this->organizations[] = (int)$organizationId;
+        $this->organizations[] = $organizationId;
 
         return $this;
     }
@@ -29,7 +29,7 @@ trait HasOrganizations
     /**
      * @return array
      */
-    public function getOrganizations()
+    public function getOrganizations(): array
     {
         return array_values(array_unique($this->organizations));
     }
@@ -38,7 +38,7 @@ trait HasOrganizations
      * @param array $organizations
      * @return $this
      */
-    public function setOrganizations(array $organizations)
+    public function setOrganizations(array $organizations): self
     {
         $this->organizations = array_values(array_unique(array_map('intval', $organizations)));
 
@@ -49,7 +49,7 @@ trait HasOrganizations
      * @param int $organizationId
      * @return bool
      */
-    public function hasOrganization($organizationId)
+    public function hasOrganization(int $organizationId): bool
     {
         return in_array($organizationId, $this->organizations);
     }
@@ -57,7 +57,7 @@ trait HasOrganizations
     /**
      * @return bool
      */
-    public function belongsToOrganization()
+    public function belongsToOrganization(): bool
     {
         return !empty($this->organizations);
     }

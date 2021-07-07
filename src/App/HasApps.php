@@ -13,15 +13,15 @@ trait HasApps
     /**
      * @var array
      */
-    public $apps = [];
+    public array $apps = [];
 
     /**
      * @param int $appId
      * @return $this
      */
-    public function addApp($appId)
+    public function addApp(int $appId): self
     {
-        $this->apps[] = (int)$appId;
+        $this->apps[] = $appId;
 
         return $this;
     }
@@ -29,7 +29,7 @@ trait HasApps
     /**
      * @return array
      */
-    public function getApps()
+    public function getApps(): array
     {
         return array_values(array_unique($this->apps));
     }
@@ -38,7 +38,7 @@ trait HasApps
      * @param array $apps
      * @return $this
      */
-    public function setApps(array $apps)
+    public function setApps(array $apps): self
     {
         $this->apps = array_values(array_unique(array_map('intval', $apps)));
 
@@ -49,7 +49,7 @@ trait HasApps
      * @param int $appId
      * @return bool
      */
-    public function hasApp($appId)
+    public function hasApp(int $appId): bool
     {
         return in_array($appId, $this->apps);
     }
@@ -57,7 +57,7 @@ trait HasApps
     /**
      * @return bool
      */
-    public function belongsToApp()
+    public function belongsToApp(): bool
     {
         return !empty($this->apps);
     }

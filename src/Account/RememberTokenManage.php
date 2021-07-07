@@ -15,12 +15,12 @@ trait RememberTokenManage
     /**
      * @var string
      */
-    public $remember_token;
+    public string $remember_token;
 
     /**
      * @return string
      */
-    public function getRememberToken()
+    public function getRememberToken(): string
     {
         return $this->remember_token;
     }
@@ -29,9 +29,9 @@ trait RememberTokenManage
      * @param string $value
      * @return $this
      */
-    public function setRememberToken($value)
+    public function setRememberToken(string $value): self
     {
-        $this->remember_token = $value ?? null;
+        $this->remember_token = $value;
 
         return $this;
     }
@@ -39,7 +39,7 @@ trait RememberTokenManage
     /**
      * @return string
      */
-    public function getRememberTokenName()
+    public function getRememberTokenName(): string
     {
         return 'remember_token';
     }
@@ -47,7 +47,7 @@ trait RememberTokenManage
     /**
      * @return $this
      */
-    public function resetRememberToken()
+    public function resetRememberToken(): self
     {
         $token = Str::random(60);
 
@@ -60,7 +60,7 @@ trait RememberTokenManage
      * @param string $token
      * @return bool
      */
-    public function checkRememberToken($token)
+    public function checkRememberToken(string $token): bool
     {
         return hash_equals($this->remember_token, $token);
     }
