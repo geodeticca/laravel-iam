@@ -20,7 +20,7 @@ trait PasswordManage
     /**
      * @return string
      */
-    public function getAuthPassword(): string
+    public function getAuthPassword()
     {
         return $this->password;
     }

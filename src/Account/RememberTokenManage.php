@@ -20,7 +20,7 @@ trait RememberTokenManage
     /**
      * @return string
      */
-    public function getRememberToken(): string
+    public function getRememberToken()
     {
         return $this->remember_token;
     }
@@ -29,7 +29,7 @@ trait RememberTokenManage
      * @param string $value
      * @return $this
      */
-    public function setRememberToken(string $value): self
+    public function setRememberToken($value)
     {
         $this->remember_token = $value;
 
@@ -39,7 +39,7 @@ trait RememberTokenManage
     /**
      * @return string
      */
-    public function getRememberTokenName(): string
+    public function getRememberTokenName()
     {
         return 'remember_token';
     }
