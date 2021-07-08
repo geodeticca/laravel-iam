@@ -15,7 +15,7 @@ trait RememberTokenManage
     /**
      * @var string
      */
-    public string $remember_token;
+    public $remember_token;
 
     /**
      * @return string
