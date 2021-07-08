@@ -32,7 +32,18 @@ trait HasPolicy
      */
     public function getPolicy(): array
     {
-        return array_unique($this->policy);
+        return array_values(array_unique($this->policy));
+    }
+
+    /**
+     * @param array $policy
+     * @return $this
+     */
+    public function setPolicy(array $policy): self
+    {
+        $this->policy = array_values(array_unique($policy));
+
+        return $this;
     }
 
     /**

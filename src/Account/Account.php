@@ -61,6 +61,11 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     public $access = [];
 
     /**
+     * @var string
+     */
+    public $current_application;
+
+    /**
      * @var int
      */
     public $current_organization;
@@ -141,8 +146,28 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             'apps' => $this->getApps(),
             'policy' => $this->getPolicy(),
             'access' => $this->getAccess(),
+            'current_application' => $this->getCurrentApplication(),
             'current_organization' => $this->getCurrentOrganization(),
         ]);
+    }
+
+    /**
+     * @param string $applicationUniqid
+     * @return $this
+     */
+    public function setCurrentApplication($applicationUniqid)
+    {
+        $this->current_application = (string)$applicationUniqid;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentApplication()
+    {
+        return $this->current_application;
     }
 
     /**
@@ -315,8 +340,12 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             $account->access = (array)$data['access'];
         }
 
+        if (array_key_exists('current_application', $data)) {
+            $account->current_application = $data['current_application'];
+        }
+
         if (array_key_exists('current_organization', $data)) {
-            $account->current_organization = (array)$data['current_organization'];
+            $account->current_organization = $data['current_organization'];
         }
 
         return $account;
