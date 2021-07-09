@@ -113,6 +113,45 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     }
 
     /**
+     * @param array $data
+     * @return $this
+     */
+    public function fill(array $data)
+    {
+        $this->hydrate($data);
+
+        if (array_key_exists('groups', $data)) {
+            $this->setGroups((array)$data['groups']);
+        }
+
+        if (array_key_exists('organizations', $data)) {
+            $this->setOrganizations((array)$data['organizations']);
+        }
+
+        if (array_key_exists('apps', $data)) {
+            $this->setApps((array)$data['apps']);
+        }
+
+        if (array_key_exists('policy', $data)) {
+            $this->policy = (array)$data['policy'];
+        }
+
+        if (array_key_exists('access', $data)) {
+            $this->access = (array)$data['access'];
+        }
+
+        if (array_key_exists('current_application', $data)) {
+            $this->current_application = $data['current_application'];
+        }
+
+        if (array_key_exists('current_organization', $data)) {
+            $this->current_organization = $data['current_organization'];
+        }
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -132,12 +171,9 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function dump()
     {
         $data = $this->toArray();
-
-        unset($data['password']);
-        unset($data['remember_token']);
 
         return array_merge($data, [
             'name' => $this->getName(),
@@ -149,6 +185,31 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             'current_application' => $this->getCurrentApplication(),
             'current_organization' => $this->getCurrentOrganization(),
         ]);
+    }
+
+    /**
+     * @param array $data
+     * @return \Geodeticca\Iam\Account\Account
+     */
+    public static function createFromJwt(array $data)
+    {
+        $account = new self();
+        $account->fill($data);
+
+        return $account;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $data = $this->dump();
+
+        unset($data['password']);
+        unset($data['remember_token']);
+
+        return $data;
     }
 
     /**
@@ -309,45 +370,5 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     public function hasNoAdminRights()
     {
         return !$this->hasAdminRights();
-    }
-
-    /**
-     * @param array $data
-     * @return \Geodeticca\Iam\Account\Account
-     */
-    public static function createFromJwt(array $data)
-    {
-        $account = new self();
-        $account->hydrate($data);
-
-        if (array_key_exists('groups', $data)) {
-            $account->setGroups((array)$data['groups']);
-        }
-
-        if (array_key_exists('organizations', $data)) {
-            $account->setOrganizations((array)$data['organizations']);
-        }
-
-        if (array_key_exists('apps', $data)) {
-            $account->setApps((array)$data['apps']);
-        }
-
-        if (array_key_exists('policy', $data)) {
-            $account->policy = (array)$data['policy'];
-        }
-
-        if (array_key_exists('access', $data)) {
-            $account->access = (array)$data['access'];
-        }
-
-        if (array_key_exists('current_application', $data)) {
-            $account->current_application = $data['current_application'];
-        }
-
-        if (array_key_exists('current_organization', $data)) {
-            $account->current_organization = $data['current_organization'];
-        }
-
-        return $account;
     }
 }
