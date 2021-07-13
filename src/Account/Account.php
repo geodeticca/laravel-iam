@@ -133,19 +133,19 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
         }
 
         if (array_key_exists('policy', $data)) {
-            $this->policy = (array)$data['policy'];
+            $this->setPolicy((array)$data['policy']);
         }
 
         if (array_key_exists('access', $data)) {
-            $this->access = (array)$data['access'];
+            $this->setAllAccess((array)$data['access']);
         }
 
         if (array_key_exists('current_application', $data)) {
-            $this->current_application = $data['current_application'];
+            $this->setCurrentApplication((string)$data['current_application']);
         }
 
         if (array_key_exists('current_organization', $data)) {
-            $this->current_organization = $data['current_organization'];
+            $this->setCurrentOrganization((int)$data['current_organization']);
         }
 
         return $this;
@@ -256,6 +256,17 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     public function getAccess()
     {
         return $this->access;
+    }
+
+    /**
+     * @param array $access
+     * @return $this
+     */
+    public function setAllAccess(array $access)
+    {
+        $this->access = $access;
+
+        return $this;
     }
 
     /**
