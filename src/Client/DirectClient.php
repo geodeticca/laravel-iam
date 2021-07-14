@@ -23,4 +23,14 @@ class DirectClient
     {
         $this->setIdentity($identity);
     }
+
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return $this->identity->{$name}(...$arguments);
+    }
 }
