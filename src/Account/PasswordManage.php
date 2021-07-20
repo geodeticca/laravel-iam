@@ -15,7 +15,7 @@ trait PasswordManage
     /**
      * @var string
      */
-    public $password;
+    public string $password;
 
     /**
      * @return string
@@ -29,7 +29,7 @@ trait PasswordManage
      * @param string $value
      * @return $this
      */
-    public function setAuthPassword($value)
+    public function setAuthPassword(string $value): self
     {
         $this->password = Hash::make($value);
 
@@ -40,7 +40,7 @@ trait PasswordManage
      * @param string $password
      * @return bool
      */
-    public function checkPassword($password)
+    public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);
     }

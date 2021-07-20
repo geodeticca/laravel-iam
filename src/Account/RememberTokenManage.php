@@ -31,7 +31,7 @@ trait RememberTokenManage
      */
     public function setRememberToken($value)
     {
-        $this->remember_token = $value ?? null;
+        $this->remember_token = $value;
 
         return $this;
     }
@@ -47,7 +47,7 @@ trait RememberTokenManage
     /**
      * @return $this
      */
-    public function resetRememberToken()
+    public function resetRememberToken(): self
     {
         $token = Str::random(60);
 
@@ -60,7 +60,7 @@ trait RememberTokenManage
      * @param string $token
      * @return bool
      */
-    public function checkRememberToken($token)
+    public function checkRememberToken(string $token): bool
     {
         return hash_equals($this->remember_token, $token);
     }

@@ -6,9 +6,9 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header text-center bg-primary text-white">
-                    <span class="h2">
-                        {{ config('app.name') }}
-                    </span>
+                        <span class="h2">
+                            {{ config('app.name') }}
+                        </span>
                     </div>
 
                     <div class="card-body">

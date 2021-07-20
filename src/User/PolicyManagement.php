@@ -13,10 +13,10 @@ interface PolicyManagement
      * @param string $policy
      * @return $this
      */
-    public function addPolicy($policy);
+    public function addPolicy(string $policy): self;
 
     /**
      * @return array
      */
-    public function getPolicy();
+    public function getPolicy(): array;
 }

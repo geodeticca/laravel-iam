@@ -13,7 +13,7 @@ class Policy extends EnumAbstract
     /**
      * @return array
      */
-    public static function getEnums()
+    public static function getEnums(): array
     {
         return [
             self::POLICY_ADMIN => __('enum.group_policy_admin'),
