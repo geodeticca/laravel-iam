@@ -90,17 +90,17 @@ class IamServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('geodeticca-api', function () {
             $sign = $this->app->make(Sign::class);
 
-            $claims = null;
-            
             try {
-                $claims = $sign->decode();
+                $claims = $sign->decodeFromRequest();
+
+                if ($claims) {
+                    return Account::createFromJwt((array)$claims->usr);
+                }
             } catch (\Exception $e) {
                 $this->sendException($e);
             }
 
-            if ($claims) {
-                return Account::createFromJwt((array)$claims->usr);
-            }
+            return null;
         });
     }
 
