@@ -62,22 +62,26 @@ class JwtProvider implements UserProvider
     }
 
     /**
-     * @param mixed $identifier
      * @param string $token
+     * @param string $rememberToken
      * @return \Geodeticca\Iam\Account\Account|null
      */
-    public function retrieveByToken($identifier, $token)
+    public function retrieveByToken($token, $rememberToken)
     {
         try {
-            $claims = $this->sign->decode($identifier);
+            $claims = $this->sign->decode($token);
 
-            $user = $claims->user;
+            if (!empty($claims)) {
+                $account = Account::createFromJwt((array)$claims->usr);
 
-            if ($user->remember_token === $token) {
-                return $user;
+                if ($account->remember_token === $rememberToken) {
+                    return $account;
+                }
             }
         } catch (\Exception $e) {
         }
+
+        return null;
     }
 
     /**
@@ -95,8 +99,6 @@ class JwtProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        $account = null;
-
         try {
             $payload = $this->identity->login($credentials);
 
@@ -104,11 +106,13 @@ class JwtProvider implements UserProvider
 
             if (!empty($claims)) {
                 $account = Account::createFromJwt((array)$claims->usr);
+
+                return $account;
             }
         } catch (\Exception $e) {
         }
 
-        return $account;
+        return null;
     }
 
     /**
