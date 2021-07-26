@@ -31,6 +31,24 @@ class DirectClient
      */
     public function __call(string $name, array $arguments)
     {
+        $allowedMetrhods = [
+            'get',
+            'post',
+            'put',
+            'delete',
+            'authenticated',
+            'extend',
+            'accountDetail',
+            'accountUpdate',
+            'accountReset',
+        ];
+
+        if (in_array($name, $allowedMetrhods)) {
+            if (!$this->identity->isLogged()) {
+                $this->identity->login();
+            }
+        }
+
         return $this->identity->{$name}(...$arguments);
     }
 }

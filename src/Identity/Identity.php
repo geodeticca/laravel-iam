@@ -78,15 +78,11 @@ abstract class Identity implements IdentityContract
      */
     public function getDefaultParams(): array
     {
-        if (!$this->defaultParams) {
-            $this->defaultParams = [
-                'headers' => [
-                    'Authorization' => JwtResolver::createAuthString($this->token()),
-                ],
-            ];
-        }
-
-        return $this->defaultParams;
+        return array_merge($this->defaultParams, [
+            'headers' => [
+                'Authorization' => JwtResolver::createAuthString($this->token()),
+            ],
+        ]);
     }
 
     /**

@@ -35,9 +35,22 @@ class ProxyClient
      */
     public function __call(string $name, array $arguments)
     {
+        $allowedMetrhods = [
+            'get',
+            'post',
+            'put',
+            'delete',
+        ];
+
         // before every call on remote client, token is inserted into client's header
-        if (in_array($name, ['get', 'post', 'put', 'delete'])) {
-            $this->remote->setAuthHeader($this->identity->token());
+        if (in_array($name, $allowedMetrhods)) {
+            if (!$this->identity->isLogged()) {
+                $this->identity->login();
+            }
+
+            $token = $this->identity->token();
+
+            $this->remote->setAuthHeader($token);
         }
 
         return $this->remote->{$name}(...$arguments);
