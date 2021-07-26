@@ -68,6 +68,14 @@ abstract class Identity implements IdentityContract
     }
 
     /**
+     * @return bool
+     */
+    public function isLogged(): bool
+    {
+        return !empty($this->token());
+    }
+
+    /**
      * @param array $credentials
      * @return object
      */

@@ -16,6 +16,14 @@ trait HasOrganizations
     public array $organizations = [];
 
     /**
+     * @return int
+     */
+    public function getOrganization()
+    {
+        return reset($this->organizations);
+    }
+
+    /**
      * @param int $organizationId
      * @return $this
      */
