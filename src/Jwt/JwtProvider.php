@@ -40,17 +40,23 @@ class JwtProvider implements UserProvider
     /**
      * Retrieve a user by their unique identifier.
      *
-     * @param string $identifier
+     * @param string $token
      * @return \Geodeticca\Iam\Account\Account|null
      */
-    public function retrieveById($identifier)
+    public function retrieveById($token)
     {
         try {
-            $claims = $this->sign->decode($identifier);
+            $claims = $this->sign->decode($token);
 
-            return Account::createFromJwt((array)$claims->usr);
+            if (!empty($claims)) {
+                $account = Account::createFromJwt((array)$claims->usr);
+
+                return $account;
+            }
         } catch (\Exception $e) {
         }
+
+        return null;
     }
 
     /**
@@ -86,10 +92,10 @@ class JwtProvider implements UserProvider
 
     /**
      * @param \Geodeticca\Iam\Account\Account $user
-     * @param string $token
+     * @param string $rememberToken
      * @return void
      */
-    public function updateRememberToken(Authenticatable $user, $token)
+    public function updateRememberToken(Authenticatable $user, $rememberToken)
     {
     }
 
