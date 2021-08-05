@@ -30,9 +30,28 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        return $this->guard()->attempt(
+        $attempt = $this->guard()->attempt(
             $this->credentials($request)
         );
+
+        if ($attempt) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return array_merge($request->only($this->username(), 'password'), [
+            'app' => config('iam.app'),
+        ]);
     }
 
     /**
