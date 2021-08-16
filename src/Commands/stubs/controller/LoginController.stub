@@ -8,9 +8,21 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+use App\Providers\RouteServiceProvider;
+
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
+
+    /**
+     * Get the path the user should be redirected to.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        return RouteServiceProvider::HOME;
+    }
 
     /**
      * Show the application's login form.
