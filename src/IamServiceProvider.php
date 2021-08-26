@@ -142,7 +142,7 @@ class IamServiceProvider extends ServiceProvider
 
             $identity = new StatelessIdentity($guzzleClient, $sign);
             $identity->setCredentials([
-                'app' => Config::get('iam.service.app'),
+                'app' => Config::get('iam.app'),
                 'login' => Config::get('iam.service.login'),
                 'password' => Config::get('iam.service.password'),
             ]);
