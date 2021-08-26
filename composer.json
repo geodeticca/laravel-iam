@@ -12,7 +12,8 @@
         "dense/laravel-informer": "dev-master",
         "guzzlehttp/guzzle": "^7.3",
         "illuminate/auth": ">=5.8",
-        "illuminate/support": ">=5.8"
+        "illuminate/support": ">=5.8",
+        "laravel/ui": "^3.2"
     },
     "autoload": {
         "psr-4": {
