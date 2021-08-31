@@ -16,6 +16,7 @@ use Geodeticca\Iam\Jwt\JwtProvider;
 use Geodeticca\Iam\Jwt\JwtGuard;
 use Geodeticca\Iam\Account\Account;
 use Geodeticca\Iam\Commands\Generate;
+use Geodeticca\Iam\Middleware\Authenticate;
 use Geodeticca\Iam\Middleware\AutoLogin;
 
 class IamServiceProvider extends ServiceProvider
@@ -67,6 +68,7 @@ class IamServiceProvider extends ServiceProvider
         ]);
 
         // middlewares
+        $this->app['router']->aliasMiddleware('iam.authenticate', Authenticate::class);
         $this->app['router']->aliasMiddleware('iam.autologin', AutoLogin::class);
 
         $this->app['auth']->extend('geodeticca-stateful', function () {
