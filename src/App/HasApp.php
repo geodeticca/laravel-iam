@@ -11,9 +11,9 @@ namespace Geodeticca\Iam\App;
 trait HasApp
 {
     /**
-     * @var int
+     * @var int|null
      */
-    public int $app_id;
+    public ?int $app_id;
 
     /**
      * @return bool
