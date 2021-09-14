@@ -132,6 +132,10 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             $this->setApps((array)$data['apps']);
         }
 
+        if (array_key_exists('app_uniqids', $data)) {
+            $this->setAppUniqids((array)$data['app_uniqids']);
+        }
+
         if (array_key_exists('policy', $data)) {
             $this->setPolicy((array)$data['policy']);
         }
@@ -180,6 +184,7 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
             'groups' => $this->getGroups(),
             'organizations' => $this->getOrganizations(),
             'apps' => $this->getApps(),
+            'app_uniqids' => $this->getAppUniqids(),
             'policy' => $this->getPolicy(),
             'access' => $this->getAccess(),
             'current_application' => $this->getCurrentApplication(),
