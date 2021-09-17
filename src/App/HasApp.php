@@ -13,7 +13,7 @@ trait HasApp
     /**
      * @var int|null
      */
-    public ?int $app_id;
+    public ?int $app_id = null;
 
     /**
      * @return bool
