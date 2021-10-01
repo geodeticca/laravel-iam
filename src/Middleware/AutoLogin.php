@@ -20,7 +20,7 @@ class AutoLogin
      */
     public function handle(Request $request, \Closure $next)
     {
-        $iamGuard = Auth::guard('iam');
+        $iamGuard = Auth::guard('api');
 
         if (!$iamGuard->check()) {
             // login with iam system user account

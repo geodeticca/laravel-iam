@@ -32,24 +32,6 @@ class StatelessIdentity extends Identity
     }
 
     /**
-     * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function token(): string
-    {
-        // rekurzia, nutne opravit
-        /*
-        if (!$this->token) {
-            if ($this->hasLoginCredentials()) {
-                $this->login();
-            }
-        }
-        */
-
-        return $this->token;
-    }
-
-    /**
      * @return bool
      */
     protected function hasLoginCredentials(): bool
@@ -58,6 +40,14 @@ class StatelessIdentity extends Identity
             isset($this->credentials['login']) &&
             isset($this->credentials['password']) &&
             isset($this->credentials['app']);
+    }
+
+    /**
+     * @return string
+      */
+    public function token(): string
+    {
+        return $this->token;
     }
 
     /**
@@ -76,13 +66,14 @@ class StatelessIdentity extends Identity
     /**
      * @param array $credentials
      * @return object
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function login(array $credentials = []): object
     {
         $endpoint = 'auth/login';
 
-        $credentials = array_merge($this->credentials, $credentials);
+        if ($this->hasLoginCredentials()) {
+            $credentials = array_merge($this->credentials, $credentials);
+        }
 
         // since stateless identity is used, configured credentials are inserted into request
         // send request without any default params, only sends credentials as form-data in request body

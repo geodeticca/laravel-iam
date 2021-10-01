@@ -56,7 +56,7 @@ class Account implements \JsonSerializable, Authenticatable
     /**
      * @var string
      */
-    public $authority = AccountAuthority::AUTHORITY_REGULAR;
+    public $authority = Authority::AUTHORITY_REGULAR;
 
     /**
      * @var array
@@ -67,6 +67,14 @@ class Account implements \JsonSerializable, Authenticatable
      * @var array
      */
     public $policy = [];
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return trim(ucfirst(mb_strtolower($this->forename)) . ' ' . ucfirst(mb_strtolower($this->surname)));
+    }
 
     /**
      * @param array $data
@@ -130,13 +138,40 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function jsonSerialize()
     {
-        return array_merge($this->toArray(), [
+        $data = $this->toArray();
+
+        unset($data['password']);
+        unset($data['remember_token']);
+
+        return array_merge($data, [
+            'name' => $this->getName(),
             'group_id' => $this->group_id,
             'organization_id' => $this->organization_id,
-            'name' => $this->getName(),
-            'access' => $this->getAccess(),
             'policy' => $this->getPolicy(),
+            'access' => $this->getAccess(),
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAccess()
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param string $scope
+     * @param int $permission
+     * @return $this
+     */
+    public function setAccess($scope, $permission)
+    {
+        if ($permission >= 0 && $permission <= 7) {
+            $this->access[$scope] = (int)$permission;
+        }
+
+        return $this;
     }
 
     /**
@@ -146,19 +181,13 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function addAccess($scope, $permission)
     {
-        if ($permission > 0 && $permission <= 7) {
-            $this->access[$scope] = (int)$permission;
+        if ($permission >= 0 && $permission <= 7) {
+            $access = $this->access[$scope] ?? 0;
+
+            $this->access[$scope] = (int)$access | (int)$permission;
         }
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAccess()
-    {
-        return $this->access;
     }
 
     /**
@@ -172,9 +201,13 @@ class Account implements \JsonSerializable, Authenticatable
             return 7;
         }
 
-        $permission = $this->access[$scope] ?? 0;
+        if ($this->hasAdminPolicy()) {
+            return 7;
+        }
 
-        return $permission & $action;
+        $access = $this->access[$scope] ?? 0;
+
+        return (int)$access & (int)$action;
     }
 
     /**
@@ -182,7 +215,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isAdmin()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_ADMIN;
+        return $this->authority === Authority::AUTHORITY_ADMIN;
     }
 
     /**
@@ -198,7 +231,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isSystemUser()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_SYSTEM;
+        return $this->authority === Authority::AUTHORITY_SYSTEM;
     }
 
     /**
@@ -214,7 +247,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function isRegular()
     {
-        return $this->authority === AccountAuthority::AUTHORITY_REGULAR;
+        return $this->authority === Authority::AUTHORITY_REGULAR;
     }
 
     /**
@@ -250,7 +283,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function hasAdminPolicy()
     {
-        return in_array(AccountAuthority::AUTHORITY_ADMIN, $this->policy);
+        return in_array(Authority::AUTHORITY_ADMIN, $this->policy);
     }
 
     /**
@@ -266,7 +299,7 @@ class Account implements \JsonSerializable, Authenticatable
      */
     public function hasManagerPolicy()
     {
-        return in_array(AccountAuthority::AUTHORITY_MANAGER, $this->policy);
+        return in_array(Authority::AUTHORITY_MANAGER, $this->policy);
     }
 
     /**
@@ -294,14 +327,6 @@ class Account implements \JsonSerializable, Authenticatable
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return trim(ucfirst(mb_strtolower($this->forename)) . ' ' . ucfirst(mb_strtolower($this->surname)));
-    }
-
-    /**
      * @param array $data
      * @return \Geodeticca\Iam\Account\Account
      */
@@ -310,12 +335,12 @@ class Account implements \JsonSerializable, Authenticatable
         $account = new self();
         $account->hydrate($data);
 
-        if (array_key_exists('access', $data)) {
-            $account->access = (array)$data['access'];
-        }
-
         if (array_key_exists('policy', $data)) {
             $account->policy = (array)$data['policy'];
+        }
+
+        if (array_key_exists('access', $data)) {
+            $account->access = (array)$data['access'];
         }
 
         return $account;
