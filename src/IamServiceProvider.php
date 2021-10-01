@@ -80,7 +80,7 @@ class IamServiceProvider extends ServiceProvider
             $claims = null;
             
             try {
-                $claims = $sign->decode();
+                $claims = $sign->decodeFromRequest();
             } catch (\Exception $e) {
                 $this->sendException($e);
             }
@@ -113,15 +113,15 @@ class IamServiceProvider extends ServiceProvider
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,
-                'verify' => true,
+                'verify' => false,
             ];
 
             // vypnute overovanie SSL certifikatov, okrem produkcneho prostredia
-            if (!$this->app->environment('prod')) {
-                $defaultOptions = array_merge($defaultOptions, [
-                    'verify' => false,
-                ]);
-            }
+            //if (!$this->app->environment('prod')) {
+            //    $defaultOptions = array_merge($defaultOptions, [
+            //        'verify' => false,
+            //    ]);
+            //}
 
             $connection = new GuzzleClient($defaultOptions);
 
@@ -142,15 +142,15 @@ class IamServiceProvider extends ServiceProvider
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,
-                'verify' => true,
+                'verify' => false,
             ];
 
             // vypnute overovanie SSL certifikatov, okrem produkcneho prostredia
-            if (!$this->app->environment('prod')) {
-                $defaultOptions = array_merge($defaultOptions, [
-                    'verify' => false,
-                ]);
-            }
+            //if (!$this->app->environment('prod')) {
+            //    $defaultOptions = array_merge($defaultOptions, [
+            //        'verify' => false,
+            //    ]);
+            //}
 
             $connection = new GuzzleClient($defaultOptions);
 
