@@ -93,7 +93,7 @@ class IamServiceProvider extends ServiceProvider
             $claims = null;
             
             try {
-                $claims = $sign->decode();
+                $claims = $sign->decodeFromRequest();
             } catch (\Exception $e) {
                 $this->sendException($e);
             }
