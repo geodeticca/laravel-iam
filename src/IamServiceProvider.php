@@ -130,15 +130,15 @@ class IamServiceProvider extends ServiceProvider
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,
-                'verify' => true,
+                'verify' => false,
             ];
 
             // vypnute overovanie SSL certifikatov, okrem produkcneho prostredia
-            if (!$this->app->environment('prod')) {
-                $defaultOptions = array_merge($defaultOptions, [
-                    'verify' => false,
-                ]);
-            }
+            //if (!$this->app->environment('prod')) {
+            //    $defaultOptions = array_merge($defaultOptions, [
+            //        'verify' => false,
+            //    ]);
+            //}
 
             $guzzleClient = new GuzzleClient($defaultOptions);
 
@@ -159,15 +159,15 @@ class IamServiceProvider extends ServiceProvider
 
             $defaultOptions = [
                 'base_uri' => $baseUrl,
-                'verify' => true,
+                'verify' => false,
             ];
 
             // vypnute overovanie SSL certifikatov, okrem produkcneho prostredia
-            if (!$this->app->environment('prod')) {
-                $defaultOptions = array_merge($defaultOptions, [
-                    'verify' => false,
-                ]);
-            }
+            //if (!$this->app->environment('prod')) {
+            //    $defaultOptions = array_merge($defaultOptions, [
+            //        'verify' => false,
+            //    ]);
+            //}
 
             $guzzleClient = new GuzzleClient($defaultOptions);
 
