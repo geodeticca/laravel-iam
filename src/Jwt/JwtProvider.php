@@ -11,12 +11,16 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 use Dense\Jwt\Auth\Sign;
+use Dense\Jwt\Auth\Resolver;
+use Dense\Informer\Mail\InformerTrait;
 
 use Geodeticca\Iam\Identity\IdentityContract;
 use Geodeticca\Iam\Account\Account;
 
 class JwtProvider implements UserProvider
 {
+    use InformerTrait;
+
     /**
      * @var \Dense\Jwt\Auth\Sign
      */
@@ -54,6 +58,8 @@ class JwtProvider implements UserProvider
                 return $account;
             }
         } catch (\Exception $e) {
+            $this->sendException($e);
+            $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
         }
 
         return null;
@@ -85,6 +91,8 @@ class JwtProvider implements UserProvider
                 }
             }
         } catch (\Exception $e) {
+            $this->sendException($e);
+            $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
         }
 
         return null;
@@ -116,6 +124,8 @@ class JwtProvider implements UserProvider
                 return $account;
             }
         } catch (\Exception $e) {
+            $this->sendException($e);
+            $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
         }
 
         return null;

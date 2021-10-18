@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
 use Dense\Jwt\Auth\Sign;
+use Dense\Jwt\Auth\Resolver;
 use Dense\Informer\Mail\InformerTrait;
 
 use Geodeticca\Iam\Identity\StatefulIdentity;
@@ -100,6 +101,7 @@ class IamServiceProvider extends ServiceProvider
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);
+                $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
             }
 
             return null;
