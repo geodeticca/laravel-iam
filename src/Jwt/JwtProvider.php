@@ -113,19 +113,27 @@ class JwtProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
+        $login = null;
+
         try {
-            $payload = $this->identity->login($credentials);
-
-            $claims = $this->sign->decode($payload->token);
-
-            if (!empty($claims)) {
-                $account = Account::createFromJwt((array)$claims->usr);
-
-                return $account;
-            }
+            $login = $this->identity->login($credentials);
         } catch (\Exception $e) {
             $this->sendException($e);
-            $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
+        }
+
+        if (!is_null($login)) {
+            try {
+                $claims = $this->sign->decode($login->token);
+
+                if (!empty($claims)) {
+                    $account = Account::createFromJwt((array)$claims->usr);
+
+                    return $account;
+                }
+            } catch (\Exception $e) {
+                $this->sendException($e);
+                $this->sendDebug(sprintf('Auth JWT token: %s', $login->token));
+            }
         }
 
         return null;
