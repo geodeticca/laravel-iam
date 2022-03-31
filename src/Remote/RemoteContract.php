@@ -12,27 +12,27 @@ interface RemoteContract
     /**
      * @param string $endpoint
      * @param array $params
-     * @return object
+     * @return mixed
      */
-    public function get(string $endpoint, array $params = []): object;
+    public function get(string $endpoint, array $params = []);
 
     /**
      * @param string $endpoint
      * @param array $params
-     * @return object
+     * @return mixed
      */
-    public function post(string $endpoint, array $params = []): object;
+    public function post(string $endpoint, array $params = []);
 
     /**
      * @param string $endpoint
      * @param array $params
-     * @return object
+     * @return mixed
      */
-    public function put(string $endpoint, array $params = []): object;
+    public function put(string $endpoint, array $params = []);
 
     /**
      * @param string $endpoint
-     * @return object
+     * @return mixed
      */
-    public function delete(string $endpoint): object;
+    public function delete(string $endpoint);
 }
