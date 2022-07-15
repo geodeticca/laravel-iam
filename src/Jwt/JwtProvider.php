@@ -10,6 +10,8 @@ namespace Geodeticca\Iam\Jwt;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
+use GuzzleHttp\Exception\TransferException;
+
 use Dense\Jwt\Auth\Sign;
 use Dense\Jwt\Auth\Resolver;
 use Dense\Informer\Mail\InformerTrait;
@@ -117,6 +119,8 @@ class JwtProvider implements UserProvider
 
         try {
             $login = $this->identity->login($credentials);
+        } catch (TransferException $e) {
+            $this->sendException($e);
         } catch (\Exception $e) {
             $this->sendException($e);
         }
@@ -126,9 +130,7 @@ class JwtProvider implements UserProvider
                 $claims = $this->sign->decode($login->token);
 
                 if (!empty($claims)) {
-                    $account = Account::createFromJwt((array)$claims->usr);
-
-                    return $account;
+                    return Account::createFromJwt((array)$claims->usr);
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);
