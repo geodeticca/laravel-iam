@@ -11,9 +11,14 @@ use Dense\Delivery\Result\Hydrator;
 use Geodeticca\Iam\Identity\HasIdentity;
 use Geodeticca\Iam\Identity\IdentityContract;
 
-class DirectClient
+abstract class DirectClient
 {
     use Hydrator, HasIdentity;
+
+    /**
+     * @return string
+     */
+    abstract protected function state() : string;
 
     /**
      * DirectClient constructor.
@@ -44,8 +49,16 @@ class DirectClient
         ];
 
         if (in_array($name, $allowedMetrhods)) {
-            if (!$this->identity->isLogged()) {
-                $this->identity->login();
+            switch($this->state()) {
+                case 'stateful':
+                    break;
+
+                case 'stateless':
+                    //if (!$this->identity->isLogged()) {
+                    $this->identity->login();
+                    //}
+
+                    break;
             }
         }
 

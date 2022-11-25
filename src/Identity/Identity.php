@@ -79,7 +79,7 @@ abstract class Identity implements IdentityContract
      * @param array $credentials
      * @return object
      */
-    abstract public function login(array $credentials): object;
+    abstract public function login(array $credentials = []): object;
 
     /**
      * @return array

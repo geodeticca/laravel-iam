@@ -13,12 +13,17 @@ use Geodeticca\Iam\Remote\HasRemote;
 use Geodeticca\Iam\Identity\IdentityContract;
 use Geodeticca\Iam\Remote\RemoteContract;
 
-class ProxyClient
+abstract class ProxyClient
 {
     use Hydrator, HasIdentity, HasRemote;
 
     /**
-     * RemoteClient constructor.
+     * @return string
+     */
+    abstract protected function state() : string;
+
+    /**
+     * ProxyClient constructor.
      * @param \Geodeticca\Iam\Identity\IdentityContract $identity
      * @param \Geodeticca\Iam\Remote\RemoteContract $remote
      */
@@ -44,8 +49,16 @@ class ProxyClient
 
         // before every call on remote client, token is inserted into client's header
         if (in_array($name, $allowedMetrhods)) {
-            if (!$this->identity->isLogged()) {
-                $this->identity->login();
+            switch($this->state()) {
+                case 'stateful':
+                    break;
+
+                case 'stateless':
+                    //if (!$this->identity->isLogged()) {
+                    $this->identity->login();
+                    //}
+
+                    break;
             }
 
             $token = $this->identity->token();
