@@ -50,7 +50,7 @@ class StatefulIdentity extends Identity
      * @return object
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function login(array $credentials): object
+    public function login(array $credentials = []): object
     {
         $endpoint = 'auth/login';
 

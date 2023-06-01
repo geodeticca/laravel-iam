@@ -13,7 +13,7 @@ interface IdentityContract
      * @param array $credentials
      * @return object
      */
-    public function login(array $credentials): object;
+    public function login(array $credentials = []): object;
 
     /**
      * @return string
