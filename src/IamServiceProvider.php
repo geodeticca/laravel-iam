@@ -82,7 +82,8 @@ class IamServiceProvider extends ServiceProvider
 
         // guard used to protect exposed api routes that cannot use standart login procedure
         // thus do not send any JWT token in the header
-        $this->app['auth']->extend('geodeticca-tokenless', function () {
+        // login is done via system user account details
+        $this->app['auth']->extend('geodeticca-autologin', function () {
             $sign = $this->app->make(Sign::class);
             $identity = $this->app->make(StatelessIdentity::class);
 

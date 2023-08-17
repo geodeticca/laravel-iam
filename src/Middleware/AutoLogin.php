@@ -20,11 +20,11 @@ class AutoLogin
      */
     public function handle(Request $request, \Closure $next)
     {
-        $iamGuard = Auth::guard('geodeticca-tokenless');
+        $guard = Auth::guard('geodeticca-autologin');
 
-        if (!$iamGuard->check()) {
+        if (!$guard->check()) {
             // login with iam system user account
-            $attempt = $iamGuard->attempt();
+            $attempt = $guard->attempt();
 
             if (!$attempt) {
                 return Response::json(['message' => 'Unauthorized'], 401);

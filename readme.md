@@ -39,26 +39,23 @@ Add these settings to config/auth.php file.
 ],
 
 'guards' => [
-    // protects web based routes
     'web' => [
-        'driver' => 'geodeticca-stateful',
+        'driver' => 'geodeticca-web',
     ],
 
-    // protects application exposed api based routes
     'api' => [
         'driver' => 'geodeticca-api',
     ],
     
-    // 
-    'remote' => [
-        'driver' => 'geodeticca-stateless',
+    'autologin' => [
+        'driver' => 'geodeticca-autologin',
     ],
 ],
 ```
 
-If you need only token for javascript application or testing purposes
+If you need only token for javascript application or testing purposes. Login process requires system user account details.  
 ```
-$guard = Auth::guard('remote');
+$guard = Auth::guard('autologin');
 
 $attempt = $guard->attempt([
     'app' => config('iam.app'),
