@@ -68,7 +68,7 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     /**
      * @var int
      */
-    public $current_organization;
+    public $current_organization = null;
 
     /**
      * @return string
@@ -149,7 +149,7 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
         }
 
         if (array_key_exists('current_organization', $data)) {
-            $this->setCurrentOrganization((int)$data['current_organization']);
+            $this->setCurrentOrganization($data['current_organization']);
         }
 
         return $this;
@@ -237,12 +237,12 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     }
 
     /**
-     * @param int $organizationId
+     * @param int|null $organizationId
      * @return $this
      */
     public function setCurrentOrganization($organizationId)
     {
-        $this->current_organization = (int)$organizationId;
+        $this->current_organization = $organizationId ?? null;
 
         return $this;
     }
@@ -286,6 +286,14 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
         }
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function authenticateApp($currentApp)
+    {
+        return $this->hasAppUniqid($currentApp);
     }
 
     /**

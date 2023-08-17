@@ -59,6 +59,17 @@ trait HasApps
     }
 
     /**
+     * @param string $appUniqid
+     * @return bool
+     */
+    public function hasAppUniqid(string $appUniqid): bool
+    {
+        $appUniqids = $this->getAppUniqids();
+
+        return in_array($appUniqid, $appUniqids);
+    }
+
+    /**
      * @param array $appIds
      * @return $this
      */

@@ -8,7 +8,6 @@ use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client as GuzzleClient;
 use Firebase\JWT\JWT;
 use Dense\Jwt\Auth\Sign;
-use Dense\Jwt\Auth\Resolver;
 use Dense\Informer\Mail\InformerTrait;
 
 use Geodeticca\Iam\Identity\StatefulIdentity;
@@ -30,8 +29,7 @@ class IamServiceProvider extends ServiceProvider
     protected string $namespace = 'iam';
 
     /**
-     * Bootstrap any application services.
-     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @return void
      */
     public function boot()
@@ -72,7 +70,8 @@ class IamServiceProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('iam.authenticate', Authenticate::class);
         $this->app['router']->aliasMiddleware('iam.autologin', AutoLogin::class);
 
-        $this->app['auth']->extend('geodeticca-stateful', function () {
+        // guard used to protect web routes
+        $this->app['auth']->extend('geodeticca-web', function () {
             $sign = $this->app->make(Sign::class);
             $identity = $this->app->make(StatefulIdentity::class);
 
@@ -81,7 +80,9 @@ class IamServiceProvider extends ServiceProvider
             return new JwtGuard($jwtProvider);
         });
 
-        $this->app['auth']->extend('geodeticca-stateless', function () {
+        // guard used to protect exposed api routes that cannot use standart login procedure
+        // thus do not send any JWT token in the header
+        $this->app['auth']->extend('geodeticca-tokenless', function () {
             $sign = $this->app->make(Sign::class);
             $identity = $this->app->make(StatelessIdentity::class);
 
@@ -90,18 +91,28 @@ class IamServiceProvider extends ServiceProvider
             return new JwtGuard($jwtProvider);
         });
 
+        // guard used to protect exposed api routes that require JWT token in the header
         $this->app['auth']->viaRequest('geodeticca-api', function () {
             $sign = $this->app->make(Sign::class);
 
             try {
+                // decode claims data from JWT data
                 $claims = $sign->decodeFromRequest();
 
                 if ($claims) {
-                    return Account::createFromJwt((array)$claims->usr);
+                    // fill user from claims
+                    $account = Account::createFromJwt((array)$claims->usr);
+
+                    // get current app
+                    $currentApp = Config::get('iam.app');
+
+                    // check if user has access to current app
+                    if ($account->authenticateApp($currentApp)) {
+                        return $account;
+                    }
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);
-                $this->sendDebug(sprintf('Auth JWT token: %s', Resolver::resolveToken()));
             }
 
             return null;

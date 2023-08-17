@@ -39,14 +39,38 @@ Add these settings to config/auth.php file.
 ],
 
 'guards' => [
+    // protects web based routes
     'web' => [
         'driver' => 'geodeticca-stateful',
     ],
 
+    // protects application exposed api based routes
     'api' => [
+        'driver' => 'geodeticca-api',
+    ],
+    
+    // 
+    'remote' => [
         'driver' => 'geodeticca-stateless',
     ],
 ],
+```
+
+If you need only token for javascript application or testing purposes
+```
+$guard = Auth::guard('remote');
+
+$attempt = $guard->attempt([
+    'app' => config('iam.app'),
+    'login' => config('iam.service.login'),
+    'password' => config('iam.service.password'),
+]);
+
+if (!$attempt) {
+    throw new \Exception('Invalid login.');
+}
+
+$tokem = $guard->getProvider()->getJwtToken();
 ```
 
 If you are running lumen you need to add following lines to bootstrap/app.php file.

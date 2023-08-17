@@ -20,7 +20,7 @@ class AutoLogin
      */
     public function handle(Request $request, \Closure $next)
     {
-        $iamGuard = Auth::guard('api');
+        $iamGuard = Auth::guard('geodeticca-tokenless');
 
         if (!$iamGuard->check()) {
             // login with iam system user account
