@@ -104,13 +104,7 @@ class IamServiceProvider extends ServiceProvider
                     // fill user from claims
                     $account = Account::createFromJwt((array)$claims->usr);
 
-                    // get current app
-                    $currentApp = Config::get('iam.app');
-
-                    // check if user has access to current app
-                    if ($account->authenticateApp($currentApp)) {
-                        return $account;
-                    }
+                    return $account;
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);
