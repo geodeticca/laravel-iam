@@ -20,7 +20,7 @@ class AutoLogin
      */
     public function handle(Request $request, \Closure $next)
     {
-        $guard = Auth::guard('geodeticca-autologin');
+        $guard = Auth::guard('autologin');
 
         if (!$guard->check()) {
             // login with iam system user account
