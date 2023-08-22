@@ -104,7 +104,16 @@ class IamServiceProvider extends ServiceProvider
                     // fill user from claims
                     $account = Account::createFromJwt((array)$claims->usr);
 
-                    return $account;
+                    // application from which token came
+                    $loggedApp = $claims->aud;
+
+                    // get current app and proxied apps
+                    $allowedApps = array_merge([Config::get('iam.app')], Config::get('iam.proxy'));
+
+                    // check if user has access to current app
+                    if (in_array($loggedApp, $allowedApps)) {
+                        return $account;
+                    }
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);

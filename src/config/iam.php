@@ -3,6 +3,8 @@
 return [
     'app' => env('IAM_APP'),
 
+    'proxy' => explode(',', env('IAM_PROXY')),
+
     'service' => [
         'url' => env('IAM_URL'),
         'login' => env('IAM_SERVICE_LOGIN'),

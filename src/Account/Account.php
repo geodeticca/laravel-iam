@@ -289,14 +289,6 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     }
 
     /**
-     * @return bool
-     */
-    public function authenticateApp($currentApp)
-    {
-        return $this->hasAppUniqid($currentApp);
-    }
-
-    /**
      * @param string $scope
      * @param int $permission
      * @return $this
