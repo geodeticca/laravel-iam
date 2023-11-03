@@ -387,4 +387,25 @@ class Account implements AuthenticatableContract, PolicyManagement, \JsonSeriali
     {
         return !$this->hasAdminRights();
     }
+
+    /**
+     * @param string$app
+     * @return bool
+     */
+    public function isAppAllowed($app)
+    {
+        if ($this->isAdmin()) {
+            return true;
+        } elseif ($this->isSystemUser()) {
+            $allowedApps = array_merge($this->app_uniqids, $this->connected_apps);
+
+            return in_array($app, $allowedApps);
+        } elseif ($this->isRegular()) {
+            $allowedApps = $this->app_uniqids;
+
+            return in_array($app, $allowedApps);
+        }
+
+        return false;
+    }
 }

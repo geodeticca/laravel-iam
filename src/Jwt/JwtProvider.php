@@ -130,7 +130,9 @@ class JwtProvider implements UserProvider
                 $claims = $this->sign->decode($login->token);
 
                 if (!empty($claims)) {
-                    return Account::createFromJwt((array)$claims->usr);
+                    $account = Account::createFromJwt((array)$claims->usr);
+
+                    return $account;
                 }
             } catch (\Exception $e) {
                 $this->sendException($e);

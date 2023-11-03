@@ -21,6 +21,11 @@ trait HasApps
     public array $app_uniqids = [];
 
     /**
+     * @var array
+     */
+    public array $connected_apps = [];
+
+    /**
      * @param int $appId
      * @return $this
      */
@@ -43,6 +48,17 @@ trait HasApps
     }
 
     /**
+     * @param string $connectedApp
+     * @return $this
+     */
+    public function addConnectedApp(string $connectedApp): self
+    {
+        $this->connected_apps[] = $connectedApp;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getApps(): array
@@ -56,6 +72,14 @@ trait HasApps
     public function getAppUniqids(): array
     {
         return array_values(array_unique($this->app_uniqids));
+    }
+
+    /**
+     * @return array
+     */
+    public function getConnectedApps(): array
+    {
+        return array_values(array_unique($this->connected_apps));
     }
 
     /**
@@ -87,6 +111,17 @@ trait HasApps
     public function setAppUniqids(array $appUniqids): self
     {
         $this->app_uniqids = array_values(array_unique($appUniqids));
+
+        return $this;
+    }
+
+    /**
+     * @param array $connectedApps
+     * @return $this
+     */
+    public function setConnectedApps(array $connectedApps): self
+    {
+        $this->connected_apps = array_values(array_unique($connectedApps));
 
         return $this;
     }
